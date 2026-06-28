@@ -100,6 +100,27 @@ background:linear-gradient(135deg,var(--pink),#ff7eb0);box-shadow:0 6px 0 rgba(0
 .autobtn.on{background:linear-gradient(135deg,#ff7eb0,#e0457f);}
 .autobtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.12);}
 .chelp{font-size:12px;color:#9aa;text-align:center;margin-top:10px;line-height:1.5;}
+.bigbtn.swipe{background:linear-gradient(135deg,#ff9f1c,#ff6b9d);}
+.swoverlay{position:fixed;inset:0;z-index:200;background:linear-gradient(160deg,#241a3d,#3a2a5e 60%,#1f3a4a);overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;}
+.swclose{position:fixed;top:12px;right:14px;z-index:210;background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:50%;width:42px;height:42px;font-size:22px;font-weight:900;cursor:pointer;line-height:1;}
+.swcard{min-height:100vh;min-height:100dvh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:64px 24px 40px;color:#fff;}
+.swcount{position:absolute;top:16px;left:18px;font-size:13px;font-weight:800;color:#ffffffaa;}
+.swtag{background:rgba(255,255,255,.16);border-radius:11px;padding:4px 12px;font-size:12px;font-weight:800;color:#fff;margin-bottom:18px;}
+.swstory{font-size:15px;color:#ffd9ec;font-weight:700;margin-bottom:8px;}
+.swq{font-size:28px;font-weight:900;line-height:1.5;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+.swa{display:none;margin-top:22px;width:100%;max-width:420px;animation:pop .25s;}
+.swa.show{display:block;}
+.swans{font-size:24px;font-weight:900;color:#7dffb0;}
+.swtip{margin-top:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:12px 14px;font-size:14px;font-weight:800;color:#ffe6a3;line-height:1.6;}
+.swtip span{display:block;font-weight:600;color:#fff;font-size:13px;margin-top:4px;}
+.swbtns{display:flex;gap:10px;justify-content:center;margin-top:26px;flex-wrap:wrap;}
+.swbtn{border:none;border-radius:16px;padding:14px 20px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.25);}
+.swbtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.25);}
+.swbtn.rev{background:#fff;color:#3a2a5e;}
+.swbtn.ok{background:linear-gradient(135deg,#ff6b9d,#ff9f1c);color:#fff;}
+.swbtn.doneb{background:#37b24d;color:#fff;}
+.swhint{margin-top:30px;font-size:13px;color:#ffffff99;font-weight:700;animation:bob 1.8s ease-in-out infinite;}
+.swcard.fin .swq{color:#ffd9ec;}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#2b2b3a;color:#fff;padding:12px 18px;border-radius:14px;font-weight:800;z-index:120;opacity:0;transition:opacity .2s;font-size:15px;}
 .toast.show{opacity:.96;}
 .cv{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99;}
@@ -229,6 +250,7 @@ function renderHome(){
     h+='<button class="bigbtn" onclick="startOne()">▶ 今日の1問をやる</button>';
   }
   if(wc>0 && !goalMet){h+='<button class="bigbtn weak" onclick="startOne()">🔁 にがてを復習（'+wc+'問）</button>';}
+  h+='<button class="bigbtn swipe" onclick="openSwipe()">📲 スワイプ練習（サクサクめくる）</button>';
   h+='<button class="bigbtn commute" onclick="startCommute()">🎧 通学モード（耳で1問・画面見なくてOK）</button>';
   h+='<button class="bigbtn kotsu" onclick="renderKotsu()">💡 計算のコツ図鑑（'+KOTSU.length+'こ）</button>';
 
@@ -441,6 +463,45 @@ function autoLoop(){ // 問題→(間)→答え→(間)→次 を自動で
 }
 function nextCommuteAuto(){commute.idx++;renderCommute();if(commute.auto)autoLoop();}
 function stopCommute(){commute.auto=false;clearTimeout(commute.timer);if(window.speechSynthesis)speechSynthesis.cancel();renderHome();}
+
+// ===== 縦スワイプ練習（サクサクめくる・スマホ習慣に乗せる） =====
+let swipeEl=null;
+function openSwipe(){
+  const order=shuffleArr(BANK.map((_,i)=>i)).slice(0,12);
+  let cards='';
+  order.forEach((bi,i)=>{
+    const q=BANK[bi], kid=TIPMAP[q.id], k=kid?tipById(kid):null;
+    const next=(i+1<order.length)?(i+1):-1;
+    cards+='<div class="swcard" id="swc'+i+'">'+
+      '<div class="swcount">'+(i+1)+' / '+order.length+'</div>'+
+      '<div class="swtag">'+q.unit+'</div>'+
+      '<div class="swq">'+(q.story?'<div class="swstory">'+q.story+'</div>':'')+q.q+'</div>'+
+      '<div class="swa" id="swa'+i+'"><div class="swans">こたえ：'+q.a+'</div>'+
+        (k?'<div class="swtip">'+k.emoji+' '+k.title+'<span>'+k.easyWay+'</span></div>':'')+'</div>'+
+      '<div class="swbtns">'+
+        '<button class="swbtn rev" id="swr'+i+'" onclick="swipeReveal('+i+')">👀 答えを見る</button>'+
+        '<button class="swbtn ok" onclick="swipeDone('+i+',this,'+next+')">✓ できた</button>'+
+      '</div>'+
+      '<div class="swhint">↑ スワイプでつぎ</div></div>';
+  });
+  cards+='<div class="swcard fin"><div style="font-size:50px">🎉</div>'+
+    '<div class="swq">よくがんばった！</div>'+
+    '<div class="swbtns"><button class="swbtn ok" onclick="closeSwipe()">🏠 トップにもどる</button>'+
+    '<button class="swbtn rev" onclick="closeSwipe();openSwipe();">🔁 もう1セット</button></div></div>';
+  const ov=document.createElement('div');ov.className='swoverlay';
+  ov.innerHTML='<button class="swclose" onclick="closeSwipe()">×</button>'+cards;
+  document.body.appendChild(ov); swipeEl=ov; ov.scrollTop=0;
+}
+function swipeReveal(i){const a=document.getElementById('swa'+i);if(a)a.classList.add('show');
+  const r=document.getElementById('swr'+i);if(r)r.style.display='none';}
+function swipeDone(i,btn,next){
+  if(btn.dataset.done)return; btn.dataset.done='1';
+  swipeReveal(i);
+  if(solvedToday()===0)recordDay(1); bumpSolvedToday(); addPoints(3); // めくった練習も連続日数キープ
+  btn.textContent='✓ きろくした！'; btn.classList.remove('ok'); btn.classList.add('doneb');
+  if(next>=0){const el=document.getElementById('swc'+next);if(el)el.scrollIntoView({behavior:'smooth'});}
+}
+function closeSwipe(){if(swipeEl){swipeEl.remove();swipeEl=null;}renderHome();}
 
 // ----- 読み上げ -----
 let warmed=false;
