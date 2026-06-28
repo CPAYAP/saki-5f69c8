@@ -1,0 +1,13 @@
+{
+  "name": "さきの まいにち勉強",
+  "short_name": "さき勉強",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffe9f3",
+  "theme_color": "#e0457f",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

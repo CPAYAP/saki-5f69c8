@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#e0457f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="毎日数学">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>さきの 毎日数学チャレンジ</title>
+<style>
+:root{--pink:#e0457f;--blue:#4a90e2;--green:#37b24d;--teal:#16b7b0;--orange:#ff9f1c;--purple:#8a5cf6;--ink:#2b2b3a;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+color:var(--ink);background:linear-gradient(135deg,#ffe9f3,#e9f3ff 50%,#eafff0);min-height:100vh;}
+.wrap{max-width:560px;margin:0 auto;padding:14px 14px 60px;}
+.head{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.head .m{width:54px;height:54px;flex:0 0 54px;animation:bob 2.4s ease-in-out infinite;cursor:pointer;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.head h1{margin:0;font-size:20px;color:#d6357f;text-shadow:1px 1px 0 #fff;}
+.head h1 small{display:block;font-size:11px;color:#777;font-weight:normal;}
+.crumbs{font-size:13px;color:#888;font-weight:700;margin:4px 2px 10px;}
+.crumbs a{color:var(--blue);cursor:pointer;text-decoration:none;}
+.dash{background:#fff;border-radius:18px;padding:14px 16px;margin:4px 0 14px;box-shadow:0 4px 14px rgba(90,90,160,.12);}
+.dtop{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.stat{background:#fff7ea;border:2px solid #ffe178;border-radius:12px;padding:6px 11px;font-weight:800;font-size:14px;color:#7a5b00;}
+.stat.s{background:#ffeef4;border-color:#ffc2d8;color:#b03a66;}
+.stat.w{background:#eef6ff;border-color:#b9dbff;color:#2a6fb0;}
+.lvwrap{display:flex;align-items:center;gap:10px;margin:12px 0 2px;}
+.lvbadge{background:linear-gradient(135deg,#ffd23f,#ff9f1c);color:#fff;font-weight:900;border-radius:12px;padding:6px 12px;font-size:14px;box-shadow:0 2px 0 rgba(0,0,0,.12);white-space:nowrap;}
+.lvbar{flex:1;height:14px;background:#eee;border-radius:9px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.1);}
+.lvbar>i{display:block;height:100%;background:linear-gradient(90deg,#ffe178,#ff9f1c);width:0;transition:width .6s cubic-bezier(.2,.8,.3,1);}
+.weekrow{display:flex;gap:6px;margin-top:12px;justify-content:space-between;}
+.wd{flex:1;text-align:center;font-size:11px;font-weight:800;color:#aaa;}
+.wd .dot{width:26px;height:26px;border-radius:50%;margin:3px auto 2px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.wd .dot.on{background:linear-gradient(135deg,#ff9f1c,#ffd23f);color:#fff;box-shadow:0 2px 0 rgba(255,150,0,.25);}
+.wd .dot.today{outline:2px dashed var(--pink);outline-offset:1px;}
+.bigbtn{display:block;width:100%;border:none;border-radius:18px;padding:18px;font-size:19px;font-weight:900;color:#fff;
+background:linear-gradient(135deg,var(--pink),#ff7eb0);box-shadow:0 6px 0 rgba(0,0,0,.13);cursor:pointer;margin:6px 0;}
+.bigbtn:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.13);}
+.bigbtn.sub{background:linear-gradient(135deg,#7aa8e8,var(--blue));font-size:16px;padding:14px;}
+.bigbtn.weak{background:linear-gradient(135deg,#ffb14a,var(--orange));}
+.bigbtn:disabled{filter:grayscale(.6);opacity:.55;cursor:default;box-shadow:0 3px 0 rgba(0,0,0,.1);}
+.panel{background:#fff;border-radius:20px;padding:18px 16px;box-shadow:0 8px 24px rgba(90,90,160,.15);}
+.counter{display:flex;justify-content:space-between;align-items:center;color:#888;font-size:13px;font-weight:800;margin-bottom:10px;}
+.tag{background:#f1edff;color:#6b48d6;border-radius:9px;padding:3px 9px;font-size:11px;font-weight:800;}
+.card{border-radius:18px;padding:22px 16px;background:linear-gradient(160deg,#fff,#f7faff);border:3px solid #e7eefc;animation:cardin .3s;text-align:center;}
+@keyframes cardin{from{transform:translateY(8px);opacity:.4}to{transform:translateY(0);opacity:1}}
+.qtxt{font-size:21px;font-weight:800;line-height:1.6;color:#23304a;}
+.qstory{font-size:14px;font-weight:700;color:#8a7fa8;margin-bottom:8px;line-height:1.5;}
+.ansrow{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:18px;}
+.ansrow input{width:140px;font-size:24px;font-weight:900;text-align:center;border:3px solid #d8e2f5;border-radius:14px;padding:10px;color:var(--ink);outline:none;}
+.ansrow input:focus{border-color:var(--blue);}
+.unit{font-size:15px;font-weight:800;color:#888;}
+.hintbtn{margin-top:14px;background:#fff7e0;border:2px solid #ffd84a;color:#7a5b00;border-radius:13px;padding:11px 14px;font-size:14px;font-weight:800;cursor:pointer;width:100%;}
+.hintbtn:active{transform:scale(.98);}
+.hintbox{margin-top:10px;background:#fff9e8;border:2px solid #ffe39a;border-radius:13px;padding:11px 14px;font-size:14.5px;color:#7a5b00;font-weight:700;line-height:1.6;text-align:left;animation:pop .25s;}
+.hintbox .hl{font-size:11px;font-weight:900;color:#c98a00;display:block;margin-bottom:2px;}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.btns{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+.btn{border:none;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:800;cursor:pointer;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.12);}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.12);}
+.check{background:var(--green);flex:1;}.next{background:var(--pink);flex:1;}.speak{background:var(--blue);}.skip{background:#c3c3d0;}
+.fb{text-align:center;font-size:19px;font-weight:900;min-height:26px;margin-top:14px;}
+.solbox{margin-top:12px;background:#eef6ff;border:2px solid #b9dbff;border-radius:13px;padding:12px 14px;font-size:14.5px;color:#23527a;font-weight:600;line-height:1.7;text-align:left;animation:pop .25s;}
+.solbox b{color:#1c6fd0;}
+.okbox{margin-top:12px;background:#e9fbef;border:2px solid #a7e6bd;border-radius:13px;padding:12px 14px;font-size:14.5px;color:#1d7a45;font-weight:700;line-height:1.7;text-align:left;animation:pop .25s;}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#2b2b3a;color:#fff;padding:12px 18px;border-radius:14px;font-weight:800;z-index:120;opacity:0;transition:opacity .2s;font-size:15px;}
+.toast.show{opacity:.96;}
+.cv{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99;}
+.footer{text-align:center;font-size:11px;color:#bbb;margin-top:20px;line-height:1.6;}
+.medalrow{margin-top:14px;}
+.medalrow h3{margin:4px 0 6px;font-size:13px;color:#666;}
+.medals{display:flex;flex-wrap:wrap;gap:7px;}
+.medal{width:52px;height:52px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:20px;background:#f3f3f7;border:2px solid #eee;}
+.medal.got{background:#fff7ea;border-color:#ffd84a;box-shadow:0 2px 0 rgba(255,170,0,.18);}
+.medal.locked{filter:grayscale(1);opacity:.32;}
+.medal .ml{font-size:8px;font-weight:800;color:#7a5b00;margin-top:1px;line-height:1.05;text-align:center;}
+.endcard{text-align:center;}
+.endcard .big{font-size:46px;margin:6px 0;}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <svg class="m" onclick="goHome()" viewBox="0 0 100 100"><title>トップにもどる</title>
+      <circle cx="50" cy="54" r="38" fill="#ffd23f"/><circle cx="38" cy="50" r="5" fill="#2b2b3a"/><circle cx="62" cy="50" r="5" fill="#2b2b3a"/>
+      <path d="M40 66 Q50 74 60 66" stroke="#2b2b3a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="30" cy="60" r="5" fill="#ff9bbd" opacity=".7"/><circle cx="70" cy="60" r="5" fill="#ff9bbd" opacity=".7"/>
+      <text x="50" y="26" font-size="16" text-anchor="middle">✏️</text></svg>
+    <h1>毎日数学チャレンジ<small>1日1問でいいよ。すこしずつ◎</small></h1>
+  </div>
+  <div class="crumbs" id="crumbs"></div>
+  <div id="view"></div>
+  <div class="footer">咲希せんよう・スマホでサクッと／こたえは半角すうじで入力してね</div>
+</div>
+<canvas class="cv" id="cv"></canvas>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   毎日数学チャレンジ ─ 既存おべんきょうサイトと連動する単独ページ
+   ・進捗(連続日数/ポイント/レベル)は既存サイトと共通の PKEY を使用
+   ・数学のミス問題だけは専用キー(WKEY)で弱点リピート(SRS)管理
+   ========================================================= */
+
+// ----- 共有プロフィール(既存サイトと同じ saki_progress_v1) -----
+const PKEY='saki_progress_v1';
+function pload(){try{return JSON.parse(localStorage.getItem(PKEY))||{}}catch(e){return{}}}
+function psave(p){try{localStorage.setItem(PKEY,JSON.stringify(p))}catch(e){}}
+function dstr(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function today(){return dstr(new Date());}
+function lvlFromPts(pt){return Math.floor((pt||0)/100)+1;}
+function addPoints(n){const p=pload();const before=lvlFromPts(p.points||0);p.points=(p.points||0)+n;const after=lvlFromPts(p.points);psave(p);
+  if(after>before){setTimeout(()=>{toast('レベルアップ！🎉 Lv.'+after+'になったよ！');pop();},300);}}
+function recordDay(n){const p=pload();p.days=p.days||{};p.days[today()]=(p.days[today()]||0)+(n||1);
+  p.log=p.log||[];p.log.unshift({s:'daily',u:'毎日数学',mode:'math',score:n,total:n,date:today()});p.log=p.log.slice(0,60);psave(p);}
+function streakDays(){const p=pload(),days=p.days||{};let n=0,d=new Date();
+  if(!days[dstr(d)])d.setDate(d.getDate()-1);
+  for(;;){if(days[dstr(d)]){n++;d.setDate(d.getDate()-1);}else break;}return n;}
+function solvedToday(){const p=pload();return (p.mathDay&&p.mathDay.date===today())?p.mathDay.n:0;}
+function bumpSolvedToday(){const p=pload();if(!p.mathDay||p.mathDay.date!==today())p.mathDay={date:today(),n:0};p.mathDay.n++;psave(p);}
+
+// ----- 弱点リピート(SRS) -----
+const WKEY='saki_math_weak_v1';
+function wload(){try{return JSON.parse(localStorage.getItem(WKEY))||{}}catch(e){return{}}}
+function wsave(w){try{localStorage.setItem(WKEY,JSON.stringify(w))}catch(e){}}
+// 各問題 id ごとに {due:'YYYY-M-D', miss:n, streak:n}。dueが今日以前なら出題対象
+function markMiss(id){const w=wload();const e=w[id]||{miss:0,streak:0};e.miss++;e.streak=0;e.due=today();w[id]=e;wsave(w);}
+function markHit(id){const w=wload();const e=w[id];if(!e)return; // ミス登録があるものだけ間隔を伸ばす
+  e.streak=(e.streak||0)+1;const gap=e.streak>=3?7:(e.streak===2?3:1);
+  const d=new Date();d.setDate(d.getDate()+gap);e.due=dstr(d);w[id]=e;
+  if(e.streak>=4){delete w[id];} // 4回連続正解で卒業
+  wsave(w);}
+function weakDueIds(){const w=wload();const out=[];
+  for(const id in w){if(cmpDate(w[id].due,today())<=0)out.push(id);}return out;}
+function weakCount(){return weakDueIds().length;}
+function cmpDate(a,b){const pa=a.split('-').map(Number),pb=b.split('-').map(Number);
+  return (pa[0]-pb[0])||(pa[1]-pb[1])||(pa[2]-pb[2]);}
+
+// ----- 出題ロジック -----
+// 今日すでに出した問題idを覚えて重複を避ける
+function dseenKey(){return 'math_seen_'+today();}
+function loadSeen(){try{return JSON.parse(localStorage.getItem(dseenKey()))||[]}catch(e){return[]}}
+function addSeen(id){try{const s=new Set(loadSeen());s.add(id);localStorage.setItem(dseenKey(),JSON.stringify([...s]));}catch(e){}}
+
+function pickNext(){
+  const seen=new Set(loadSeen());
+  // 1) 弱点(due)を最優先（今日まだ出してないもの）
+  const weak=weakDueIds().filter(id=>!seen.has(id));
+  if(weak.length){const id=weak[Math.floor(Math.random()*weak.length)];return {q:byId(id),weak:true};}
+  // 2) 新しい問題（今日未出題）
+  const fresh=BANK.filter(q=>!seen.has(q.id));
+  if(fresh.length){return {q:fresh[Math.floor(Math.random()*fresh.length)],weak:false};}
+  // 3) 全部出し切ったらシャッフルで復習
+  return {q:BANK[Math.floor(Math.random()*BANK.length)],weak:false};
+}
+function byId(id){return BANK.find(q=>q.id===id)||BANK[0];}
+
+// ----- 画面状態 -----
+let cur=null, curWeak=false, hintLevel=0, answered=false;
+const view=document.getElementById('view');
+const crumbs=document.getElementById('crumbs');
+
+function goHome(){renderHome();}
+
+function renderHome(){
+  crumbs.innerHTML='';
+  const stk=streakDays(), p=pload(), pts=p.points||0, lv=lvlFromPts(pts), into=pts%100;
+  const st=solvedToday(), wc=weakCount();
+  const goalMet=st>=1;
+  // 週カレンダー（直近7日）
+  const days=p.days||{};let week='';const dows=['日','月','火','水','木','金','土'];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const key=dstr(d);const on=!!days[key];
+    week+='<div class="wd">'+dows[d.getDay()]+'<div class="dot'+(on?' on':'')+(i===0?' today':'')+'">'+(on?'✓':'')+'</div></div>';}
+
+  let h='<div class="dash">'+
+    '<div class="dtop">'+
+      '<div class="stat s">🔥 '+stk+'日 れんぞく</div>'+
+      '<div class="stat">⭐ '+pts+' pt</div>'+
+      (wc>0?'<div class="stat w">🔁 ふくしゅう '+wc+'問</div>':'')+
+    '</div>'+
+    '<div class="lvwrap"><span class="lvbadge">Lv.'+lv+'</span><div class="lvbar"><i style="width:'+into+'%"></i></div></div>'+
+    '<div class="weekrow">'+week+'</div>'+
+    '</div>';
+
+  // メインCTA
+  if(goalMet){
+    h+='<div class="dash" style="text-align:center;background:linear-gradient(135deg,#fff7e6,#ffeef6)">'+
+       '<div style="font-size:34px">🎉</div><div style="font-weight:900;color:#d6357f;font-size:17px">今日のぶん クリア！</div>'+
+       '<div style="font-size:13px;color:#888;font-weight:700;margin-top:4px">今日 '+st+'問 といたよ。えらい！</div></div>';
+    h+='<button class="bigbtn sub" onclick="startOne()">もう1問やる ➕</button>';
+  }else{
+    h+='<button class="bigbtn" onclick="startOne()">▶ 今日の1問をやる</button>';
+  }
+  if(wc>0 && !goalMet){h+='<button class="bigbtn weak" onclick="startOne()">🔁 にがてを復習（'+wc+'問）</button>';}
+
+  // バッジ
+  h+='<div class="dash medalrow"><h3>あつめたメダル</h3><div class="medals">';
+  BADGES.forEach(b=>{const has=b.f(p,stk);h+='<div class="medal '+(has?'got':'locked')+'">'+b.e+'<span class="ml">'+b.n+'</span></div>';});
+  h+='</div></div>';
+  view.innerHTML=h;
+}
+
+function startOne(){
+  const pick=pickNext();cur=pick.q;curWeak=pick.weak;hintLevel=0;answered=false;
+  addSeen(cur.id);
+  renderQ();
+}
+
+function renderQ(){
+  crumbs.innerHTML='<a onclick="goHome()">🏠 トップ</a> ＞ '+(curWeak?'🔁 ふくしゅう':'🎯 今日の問題');
+  const c=cur;
+  let h='<div class="panel">'+
+    '<div class="counter"><span>'+(curWeak?'🔁 にがて復習':'🎯 チャレンジ')+'</span><span class="tag">'+c.unit+'</span></div>'+
+    '<div class="card">'+
+      (c.story?'<div class="qstory">'+c.story+'</div>':'')+
+      '<div class="qtxt">'+c.q+'</div>'+
+      '<div class="ansrow"><input id="ans" type="text" inputmode="'+(c.text?'text':'numeric')+'" autocomplete="off" placeholder="?" '+
+        'onkeydown="if(event.key===\'Enter\')checkAns()">'+(c.unitlabel?'<span class="unit">'+c.unitlabel+'</span>':'')+'</div>'+
+      '<div class="fb" id="fb"></div>'+
+      '<div id="extra"></div>'+
+      '<button class="hintbtn" id="hb" onclick="nextHint()">💡 ヒントを見る（考えてもOK）</button>'+
+      '<div id="hints"></div>'+
+    '</div>'+
+    '<div class="btns" id="actions">'+
+      '<button class="btn speak" onclick="speakQ()">🔊</button>'+
+      '<button class="btn check" id="ck" onclick="checkAns()">こたえあわせ</button>'+
+    '</div></div>';
+  view.innerHTML=h;
+  setTimeout(()=>{const a=document.getElementById('ans');if(a)a.focus();},120);
+}
+
+function nextHint(){
+  if(answered)return;
+  const hints=cur.hints||[];
+  if(hintLevel>=hints.length){toast('ヒントはここまで！自分の力でいける💪');return;}
+  const box=document.getElementById('hints');
+  const labels=['ヒント①　考え方','ヒント②　しき のとちゅう','ヒント③　もうすぐ答え'];
+  const div=document.createElement('div');div.className='hintbox';
+  div.innerHTML='<span class="hl">'+(labels[hintLevel]||'ヒント')+'</span>'+hints[hintLevel];
+  box.appendChild(div);
+  hintLevel++;
+  const hb=document.getElementById('hb');
+  if(hintLevel>=hints.length){hb.textContent='💡 ヒントは ぜんぶ 出たよ';hb.disabled=true;hb.style.opacity=.55;}
+  else hb.textContent='💡 つぎのヒント（あと'+(hints.length-hintLevel)+'こ）';
+}
+
+function norm(s){return String(s).trim().replace(/\s+/g,'').replace(/，/g,',').replace(/。/g,'').replace(/＝/g,'=').replace(/[Ａ-Ｚａ-ｚ０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0)).toLowerCase();}
+function isCorrect(input,c){
+  const a=norm(input);if(a==='')return false;
+  const accept=[c.a].concat(c.alt||[]).map(norm);
+  return accept.includes(a);
+}
+
+function checkAns(){
+  if(answered)return;
+  const inp=document.getElementById('ans').value;
+  if(norm(inp)===''){toast('答えを入力してね✏️');return;}
+  answered=true;
+  const c=cur, fb=document.getElementById('fb'), extra=document.getElementById('extra');
+  const ok=isCorrect(inp,c);
+  document.getElementById('hb').style.display='none';
+  document.getElementById('ans').disabled=true;
+  if(ok){
+    fb.textContent='せいかい！⭕';fb.style.color=getCol('--green');
+    extra.innerHTML='<div class="okbox"><b>答え：'+c.a+'</b><br>'+(c.why||c.sol||'よくできました！')+'</div>';
+    markHit(c.id);
+    const earn=curWeak?15:10;addPoints(earn);
+    if(solvedToday()===0){recordDay(1);} // その日はじめて＝連続日数カウント
+    bumpSolvedToday();
+    pop();speakJa('せいかい');
+  }else{
+    fb.innerHTML='おしい！もう少し ❗';fb.style.color='#ff7a5b';
+    extra.innerHTML='<div class="solbox"><b>正しい答え：'+c.a+'</b><br>'+(c.sol||c.why||'')+
+      (c.trap?'<br><span style="color:#d6357f">⚠️ '+c.trap+'</span>':'')+'</div>';
+    markMiss(c.id);
+    if(solvedToday()===0){recordDay(1);}
+    bumpSolvedToday();
+    addPoints(3); // 取り組んだだけでも少し加点（折れさせない）
+  }
+  const act=document.getElementById('actions');
+  act.innerHTML='<button class="btn speak" onclick="speakSol()">🔊</button>'+
+    '<button class="btn next" onclick="afterAns()">つぎへ ▶</button>';
+}
+
+function afterAns(){
+  // 今日まだ「1問」目標未達なら続行を促す形、達したらホームへ戻って達成感
+  renderHome();
+}
+
+// ----- 読み上げ -----
+let warmed=false;
+function warmup(){if(warmed||!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(e){}warmed=true;}
+function speakJa(t){if(!window.speechSynthesis)return;warmup();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.95;speechSynthesis.speak(u);}
+function speakQ(){speakJa((cur.story?cur.story+'。':'')+cur.q.replace(/<[^>]+>/g,''));}
+function speakSol(){speakJa((cur.sol||cur.why||'').replace(/<[^>]+>/g,''));}
+
+// ----- 演出 -----
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+function pop(){cv.width=innerWidth;cv.height=innerHeight;let ps=[];for(let i=0;i<70;i++)ps.push({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*12,vy:Math.random()*-12-3,c:'hsl('+(Math.random()*360)+',90%,60%)',r:Math.random()*6+3});
+  let t=0;(function fr(){ctx.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.4;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.r,p.r);});if(++t<70)requestAnimationFrame(fr);else ctx.clearRect(0,0,cv.width,cv.height);})();}
+function getCol(v){return getComputedStyle(document.documentElement).getPropertyValue(v)||'#37b24d';}
+
+// ----- バッジ -----
+const BADGES=[
+  {id:'start',e:'🌱',n:'はじめの一歩',f:(p,s)=>(p.mathDay&&p.mathDay.n>=1)||s>=1},
+  {id:'s3',e:'🔥',n:'3日れんぞく',f:(p,s)=>s>=3},
+  {id:'s7',e:'⚡',n:'7日れんぞく',f:(p,s)=>s>=7},
+  {id:'lv3',e:'🚀',n:'レベル3',f:(p,s)=>lvlFromPts(p.points||0)>=3},
+  {id:'lv5',e:'🏆',n:'レベル5',f:(p,s)=>lvlFromPts(p.points||0)>=5},
+  {id:'weak0',e:'🧹',n:'にがてゼロ',f:(p,s)=>weakCount()===0&&(p.points||0)>0},
+];
+
+// =========================================================
+//  問題バンク（中1・1学期：正負の数／文字式／一次方程式）
+//  q:問題  a:答え(正規化して判定)  alt:別解  hints:3段ヒント
+//  sol:解き方  why:正解時のひとこと  trap:つまずきポイント  story:文脈
+//  text:true なら文字入力（既定は数字）
+// =========================================================
+const BANK=[
+  // ---- 正負の数 ----
+  {id:'m01',unit:'正負の数',q:'(-3) + (-5) = ?',a:'-8',
+   hints:['同じマイナスどうしを たすよ。','3と5を ふつうに たして、しるしは…？','マイナス＋マイナス＝マイナス。8に - をつける。'],
+   sol:'同符号どうしの足し算は、数を足してその符号をつける。3+5=8、どちらも負だから −8。',why:'符号がそろってたら そのまま たすだけ！',trap:'-3-5 を「-3 と 5」と読むと まちがえるよ。'},
+  {id:'m02',unit:'正負の数',q:'(+4) + (-9) = ?',a:'-5',
+   hints:['符号がちがうね。大きいほうから 小さいほうを ひくよ。','9 と 4 のさは 5。しるしは 大きいほう(9=マイナス)に そろえる。','9-4=5、9のほうが大きくてマイナス → -5'],
+   sol:'符号が違うときは、絶対値の大きいほうから小さいほうをひく。9−4=5。大きい9が負なので −5。',why:'差をとって、大きいほうの符号にする！',trap:'「4-9」を 4のほうに ひっぱられて +5 にしないでね。'},
+  {id:'m03',unit:'正負の数',q:'(-6) - (-2) = ?',a:'-4',
+   hints:['ひき算は「+反対の数」に なおせるよ。','-(-2) は +2 とおなじ。','-6 + 2 を計算してね。'],
+   sol:'−(−2)=+2 だから、−6+2=−4。「ひく」を「たす反対の数」に直すのがコツ。',why:'マイナスのマイナスは プラス！',trap:'-(-2) を -2 のままにしないこと。'},
+  {id:'m04',unit:'正負の数',q:'(-2) × (-7) = ?',a:'14',alt:['+14'],
+   hints:['かけ算の符号は しるしの数で決まるよ。','マイナスが 2こ → 答えは プラス。','2×7=14、符号は +'],
+   sol:'負×負＝正。2×7=14 なので +14。マイナスが偶数個なら答えはプラス。',why:'マイナス2こで プラスになる！',trap:'符号を -14 にしないように。'},
+  {id:'m05',unit:'正負の数',q:'(-12) ÷ 3 = ?',a:'-4',
+   hints:['わり算の符号も かけ算と同じルール。','マイナスが 1こ → 答えは マイナス。','12÷3=4 に - をつける。'],
+   sol:'負÷正＝負。12÷3=4 だから −4。',why:'マイナス1こなら マイナス！',trap:''},
+  {id:'m06',unit:'正負の数',q:'(-2)³ = ?',a:'-8',
+   hints:['(-2)を 3回 かけるよ。','(-2)×(-2)=+4、それに もう一回 (-2)。','+4 ×(-2) = ?'],
+   sol:'(−2)×(−2)×(−2)。最初の2つで+4、さらに×(−2)で −8。マイナスが3個(奇数)なので負。',why:'指数3=3回かける。マイナス奇数個は マイナス！',trap:'-2³ と (-2)³ はちがう。今回は カッコつきだよ。'},
+  {id:'m07',unit:'正負の数',q:'-3² = ?',a:'-9',
+   hints:['カッコが ないことに 注目！','2乗されるのは 3 だけ。-3 ぜんぶじゃない。','-(3×3) = ?'],
+   sol:'カッコがないので 3だけが2乗される。-(3²)=-9。(-3)²=9 とは別物。',why:'カッコの有無で 答えが変わる！',trap:'(-3)²=9 とまちがえやすい 超重要ポイント。'},
+  {id:'m08',unit:'正負の数',q:'8 + (-3) × 2 = ?',a:'2',
+   hints:['たし算より かけ算が さき！','(-3)×2 を 先に計算すると…','8 + (-6) = ?'],
+   sol:'計算の順番は ×が先。(−3)×2=−6。8+(−6)=2。',why:'かけ算・わり算を 先にやる！',trap:'前から順に 8+(-3)=5 をやると まちがい。'},
+  // ---- 文字式 ----
+  {id:'m09',unit:'文字式',q:'x=4 のとき 3x + 2 = ?',a:'14',
+   hints:['x のところに 4 を入れるよ。','3×4 + 2 を計算。','12 + 2 = ?'],
+   sol:'3x は 3×x。x=4 なら 3×4=12、+2 で 14。',why:'文字に数を入れる=代入！',trap:'3x を 34 と読まない。3かけるx だよ。'},
+  {id:'m10',unit:'文字式',q:'2x + 5x = ?（xを使って）',a:'7x',text:true,
+   hints:['おなじ文字どうしは まとめられるよ。','2x と 5x は なかま。係数(数)を たす。','2+5=7、文字xはそのまま。'],
+   sol:'同じ文字の項はまとめられる。2+5=7 で 7x。',why:'おなじ文字の なかまは 合体！',trap:'7x²にしない。文字はそのまま x。'},
+  {id:'m11',unit:'文字式',q:'x=-2 のとき x² + 1 = ?',a:'5',
+   hints:['x² は x×x。','(-2)×(-2) を まず計算。','4 + 1 = ?'],
+   sol:'x²=(−2)²=4。4+1=5。負の数の2乗はプラス。',why:'マイナスの2乗は プラスになる！',trap:'(-2)² を -4 にしない。'},
+  {id:'m12',unit:'文字式',q:'a円のジュースを5本 買ったときの代金は？（aを使って）',a:'5a',alt:['5×a','a×5'],text:true,
+   story:'🛒 おかいものの式',
+   hints:['「1本a円」が 5本ぶん。','a を 5回 たす = a×5。','数を前に書くのがルール → 5a'],
+   sol:'a円×5本=5a円。文字式は 数を前に、×ははぶく。',why:'実生活も 式にできる！',trap:'a5 ではなく 5a。数が前。'},
+  // ---- 一次方程式 ----
+  {id:'m13',unit:'一次方程式',q:'x + 7 = 12　x = ?',a:'5',
+   hints:['xだけ のこしたい。じゃまな +7 を 消すよ。','両辺から 7 を ひく。','12 - 7 = ?'],
+   sol:'両辺から7をひく。x=12−7=5。',why:'反対の計算で xを ひとりにする！',trap:''},
+  {id:'m14',unit:'一次方程式',q:'3x = 21　x = ?',a:'7',
+   hints:['xが 3こで 21。','両辺を 3 で わる。','21 ÷ 3 = ?'],
+   sol:'両辺を3でわる。x=21÷3=7。',why:'かけ算の反対は わり算！',trap:''},
+  {id:'m15',unit:'一次方程式',q:'2x - 3 = 7　x = ?',a:'5',
+   hints:['まず -3 を 反対に うつす(+3)。','2x = 7 + 3 = 10。','10 ÷ 2 = ?'],
+   sol:'−3を移項して 2x=10。両辺÷2で x=5。「数→係数」の順でほどく。',why:'+−を先に、×÷をあとに ほどく！',trap:'移項したら 符号が変わる。-3 → +3。'},
+  {id:'m16',unit:'一次方程式',q:'5x + 2 = 3x + 10　x = ?',a:'4',
+   hints:['文字を左、数を右に あつめるよ。','3x を 左へ(−3x)、2 を 右へ(−2)。','2x = 8、さいごに ÷2'],
+   sol:'5x−3x=10−2 → 2x=8 → x=4。文字は左、数は右に移項。',why:'なかまを 左右に わける！',trap:'移項するたび 符号が反対になるのを わすれずに。'},
+  {id:'m17',unit:'一次方程式',q:'1個x円のあめを3個買って 300円出すと おつりは84円。x=?',a:'72',
+   story:'🍬 おかいもの 文章題',
+   hints:['代金 = 出したお金 − おつり だね。','代金は 300 − 84 = 216円。これが あめ3個ぶん。','3x = 216 → 両辺を 3 でわる。216 ÷ 3 = ?'],
+   sol:'代金＝出した額−おつり＝300−84＝216円。あめ3個で 3x=216、両辺÷3で x=72。',
+   why:'文章を 式に できたら 勝ち！',trap:'「代金=出した額−おつり」を式にするのがコツ。'},
+  {id:'m18',unit:'一次方程式',q:'姉と妹の年れいの和は20才。姉が妹より4才上のとき、妹は何才？',a:'8',
+   story:'👭 文章題チャレンジ',
+   hints:['妹を x才 とすると、姉は (x+4)才。','x + (x+4) = 20 という式になるよ。','2x + 4 = 20 → 2x = 16 → x = ?'],
+   sol:'妹をx才とおくと姉は(x+4)才。和が20なので x+(x+4)=20 → 2x+4=20 → 2x=16 → x=8。',why:'わからない数を xに おくのが 第一歩！',trap:'求めるのは妹。姉(12才)と まちがえないで。'},
+  // ---- 正負の数（計算の反復）----
+  {id:'m19',unit:'正負の数',q:'(-5) + 8 = ?',a:'3',
+   hints:['符号がちがう。大きいほうからひく。','8-5=3、大きい8は＋。','答えは +3'],
+   sol:'絶対値の差 8−5=3、大きい8が正なので +3。',why:'差をとって大きいほうの符号！',trap:''},
+  {id:'m20',unit:'正負の数',q:'(-7) × 3 = ?',a:'-21',
+   hints:['負×正の符号は？','マイナス1こ → マイナス。','7×3=21 に -'],
+   sol:'負×正=負。7×3=21 で −21。',why:'マイナス1こなら マイナス！',trap:''},
+  {id:'m21',unit:'正負の数',q:'(-18) ÷ (-6) = ?',a:'3',alt:['+3'],
+   hints:['負÷負の符号は？','マイナス2こ → プラス。','18÷6=3'],
+   sol:'負÷負=正。18÷6=3。',why:'マイナス2こで プラス！',trap:'-3 にしない。'},
+  {id:'m22',unit:'正負の数',q:'2 - 7 = ?',a:'-5',
+   hints:['小さい数から大きい数をひく。','7-2=5、答えは負。','-5'],
+   sol:'2−7=−5。',why:'足りないぶんマイナスになる！',trap:'答えがマイナスになるのを忘れずに。'},
+  // ---- 文字式 ----
+  {id:'m23',unit:'文字式',q:'x=3 のとき 2x - 5 = ?',a:'1',
+   hints:['x=3を代入。','2×3 - 5。','6 - 5 = ?'],
+   sol:'2×3−5=6−5=1。',why:'代入してから計算！',trap:''},
+  {id:'m24',unit:'文字式',q:'4a - a = ?（aを使って答えてね）',a:'3a',text:true,
+   hints:['a は 1a と考える。','4-1=3。','文字aはそのまま。'],
+   sol:'4a−1a=3a。',why:'おなじ文字はまとめる！',trap:'答えを 4 にしない（aが残る）。'},
+  {id:'m25',unit:'文字式',q:'x=-3 のとき -2x = ?',a:'6',
+   hints:['-2×(-3)。','負×負=正。','6'],
+   sol:'−2×(−3)=+6。',why:'マイナス×マイナスはプラス！',trap:'-6 にしない。'},
+  // ---- 一次方程式 ----
+  {id:'m26',unit:'一次方程式',q:'4x = -20　x = ?',a:'-5',
+   hints:['両辺を4でわる。','-20 ÷ 4。','符号は？'],
+   sol:'x=−20÷4=−5。',why:'かけ算の反対はわり算！',trap:''},
+  {id:'m27',unit:'一次方程式',q:'x - 5 = -2　x = ?',a:'3',
+   hints:['-5を移項(+5)。','x = -2 + 5。','3'],
+   sol:'x=−2+5=3。',why:'移項で符号が変わる！',trap:''},
+  {id:'m28',unit:'一次方程式',q:'3x + 1 = 10　x = ?',a:'3',
+   hints:['+1を移項。','3x = 9。','÷3'],
+   sol:'3x=10−1=9、x=3。',why:'数→係数の順にほどく！',trap:''},
+  {id:'m29',unit:'一次方程式',q:'x ÷ 2 = 4　x = ?',a:'8',
+   hints:['÷2の反対は×2。','x = 4 × 2。','8'],
+   sol:'x=4×2=8。',why:'わり算の反対はかけ算！',trap:''},
+  // ---- 比例と反比例 ----
+  {id:'h01',unit:'比例と反比例',q:'y = 3x で x = 4 のとき y = ?',a:'12',
+   hints:['xに4を入れる。','3 × 4。','12'],
+   sol:'y=3×4=12。',why:'xに数を入れるだけ！',trap:''},
+  {id:'h02',unit:'比例と反比例',q:'y は x に比例し、x=2 のとき y=10。比例定数 a は？',a:'5',
+   hints:['y=ax の形だよ。','10 = a × 2。','a = 10 ÷ 2'],
+   sol:'10=2a、a=5。比例定数は y÷x。',why:'比例定数 = y ÷ x！',trap:''},
+  {id:'h03',unit:'比例と反比例',q:'反比例 y = 12 ÷ x で x = 3 のとき y = ?',a:'4',
+   hints:['xに3を入れる。','12 ÷ 3。','4'],
+   sol:'y=12÷3=4。',why:'反比例は xで わる！',trap:'比例とまちがえない（かけ算じゃない）。'},
+  {id:'h04',unit:'比例と反比例',q:'y = 2x で y = 8 のとき x = ?',a:'4',
+   hints:['8 = 2x になる。','両辺を2でわる。','4'],
+   sol:'8=2x、x=4。',why:'方程式として解く！',trap:''},
+  // ---- 平面図形 ----
+  {id:'z01',unit:'平面図形',q:'三角形の3つの内角の和は？（数字を度で）',a:'180',
+   hints:['どんな三角形でも同じ。','半回転と同じ角度。','180'],
+   sol:'三角形の内角の和は 180°。',why:'三角形はいつも180°！',trap:''},
+  {id:'z02',unit:'平面図形',q:'正方形の1辺が6cm。まわりの長さは？（数字をcmで）',a:'24',
+   hints:['辺は4本ぜんぶ同じ。','6 × 4。','24'],
+   sol:'6×4=24cm。',why:'正方形は4辺おなじ！',trap:'面積(36)とまちがえない。まわりの長さだよ。'},
+  // ---- 空間図形 ----
+  {id:'k01',unit:'空間図形',q:'たて2cm・よこ3cm・高さ4cmの直方体の体積は？（cm³）',a:'24',story:'📦 体積の問題',
+   hints:['体積 = たて × よこ × 高さ。','2 × 3 × 4。',''],
+   sol:'2×3×4=24cm³。',why:'直方体はかけ算3つ！',trap:''},
+  {id:'k02',unit:'空間図形',q:'1辺3cmの立方体の体積は？（cm³）',a:'27',
+   hints:['立方体は全部おなじ長さ。','3 × 3 × 3。',''],
+   sol:'3×3×3=27cm³。',why:'立方体は同じ数を3回かける！',trap:''},
+  {id:'k03',unit:'空間図形',q:'底面積5cm²・高さ4cmの角柱の体積は？（cm³）',a:'20',
+   hints:['柱の体積 = 底面積 × 高さ。','5 × 4。',''],
+   sol:'5×4=20cm³。',why:'柱は底面積×高さ！',trap:''},
+  // ---- データの活用 ----
+  {id:'d01',unit:'データの活用',q:'データ 3,5,7,5,5 の最頻値(さいひんち)は？',a:'5',story:'📊 データの問題',
+   hints:['いちばん多く出てくる値。','5が3回ある。','5'],
+   sol:'5が3回でいちばん多い→最頻値5。',why:'最頻値=いちばん多い値！',trap:''},
+  {id:'d02',unit:'データの活用',q:'データ 2,4,6,8,10 の平均値は？',a:'6',
+   hints:['全部たして個数でわる。','合計30 ÷ 5。','6'],
+   sol:'(2+4+6+8+10)÷5=30÷5=6。',why:'平均=合計÷個数！',trap:''},
+  {id:'d03',unit:'データの活用',q:'データ 1,3,3,7,11 の中央値(メジアン)は？',a:'3',
+   hints:['小さい順にならべて まん中。','5個のまん中＝3番目。','3'],
+   sol:'並べてまん中(3番目)=3。',why:'中央値=まん中の値！',trap:'平均でなく まん中の値。'},
+  {id:'d04',unit:'データの活用',q:'10人のうち3人が当たり。当たりの相対度数は？（小数で）',a:'0.3',alt:['3/10','３/10'],
+   hints:['相対度数 = その数 ÷ 全体。','3 ÷ 10。','0.3'],
+   sol:'3÷10=0.3。',why:'相対度数=その階級÷全体！',trap:''}
+];
+
+// 起動
+renderHome();
+</script>
+</body></html>

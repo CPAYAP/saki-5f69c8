@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基礎英語レベル1 きそえいご れんしゅうアプリ</title>
+<style>
+:root{--pink:#ff5fa2;--blue:#4a90e2;--green:#37b24d;--purple:#8a5cf6;--orange:#ff9f1c;
+--yellow:#ffe178;--cream:#fff7ea;--ink:#2b2b3a;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI",
+"Meiryo","Segoe UI",system-ui,sans-serif;color:var(--ink);
+background:linear-gradient(135deg,#ffe9f3 0%,#e9f3ff 50%,#eafff0 100%);min-height:100vh;}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 60px;}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.topbar h1{font-size:20px;margin:0;line-height:1.2;color:#d6357f;text-shadow:1px 1px 0 #fff;}
+.topbar h1 small{display:block;font-size:12px;color:#666;font-weight:normal;}
+.mascot{width:64px;height:64px;flex:0 0 64px;animation:bob 2.4s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+.chip{border:none;border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;
+background:#fff;color:#555;box-shadow:0 2px 0 rgba(0,0,0,.08);transition:transform .08s;}
+.chip:active{transform:scale(.95);}
+.chip.on{background:var(--pink);color:#fff;}
+.chip.m4.on{background:var(--blue);}.chip.m5.on{background:var(--purple);}.chip.m6.on{background:var(--green);}
+.tabs{display:flex;gap:6px;margin:10px 0 4px;}
+.tab{flex:1;text-align:center;border:none;border-radius:14px 14px 0 0;padding:12px 6px;font-size:15px;
+font-weight:800;cursor:pointer;background:#ffffffaa;color:#888;}
+.tab.on{background:#fff;color:var(--ink);box-shadow:0 -3px 0 var(--pink) inset;}
+.panel{background:#fff;border-radius:0 0 18px 18px;padding:16px;box-shadow:0 8px 24px rgba(90,90,160,.15);}
+.counter{text-align:center;color:#888;font-size:13px;margin-bottom:6px;font-weight:700;}
+.card{position:relative;border-radius:22px;padding:18px;min-height:230px;display:flex;flex-direction:column;
+justify-content:center;align-items:center;text-align:center;background:linear-gradient(160deg,#fff,#fff7fb);
+border:3px solid #ffd5e7;}
+.card .badge{position:absolute;top:10px;left:10px;font-size:11px;font-weight:800;color:#fff;
+background:var(--blue);border-radius:999px;padding:3px 10px;}
+.card .lesson{position:absolute;top:10px;right:12px;font-size:12px;color:#aaa;font-weight:800;}
+.avatar{width:84px;height:84px;margin-bottom:6px;}
+.jp{font-size:21px;font-weight:800;margin:6px 0;}
+.en{font-size:24px;font-weight:800;color:#d6357f;line-height:1.35;display:none;}
+.en.show{display:block;animation:pop .25s;}
+.point{font-size:12px;color:#777;margin-top:8px;background:#f1f1f7;border-radius:10px;padding:5px 10px;display:none;}
+.point.show{display:inline-block;}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.btns{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.btn{border:none;border-radius:14px;padding:13px 18px;font-size:16px;font-weight:800;cursor:pointer;
+box-shadow:0 4px 0 rgba(0,0,0,.12);transition:transform .08s;color:#fff;}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.12);}
+.btn.flip{background:var(--orange);}.btn.speak{background:var(--blue);}
+.btn.next{background:var(--pink);}.btn.prev{background:#b9b9c9;}
+.btn.ghost{background:#fff;color:#666;box-shadow:0 2px 0 rgba(0,0,0,.08);}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.opt{border:3px solid #e7e7f1;background:#fff;border-radius:14px;padding:14px;font-size:17px;font-weight:700;
+cursor:pointer;text-align:left;transition:transform .08s;}
+.opt:active{transform:scale(.98);}
+.opt.correct{border-color:var(--green);background:#e9fbef;}
+.opt.wrong{border-color:#ff6b6b;background:#ffeaea;animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.score{font-weight:800;color:var(--green);}
+.feedback{text-align:center;font-size:22px;font-weight:900;min-height:30px;margin-top:10px;}
+.q{text-align:center;font-size:15px;color:#666;margin-bottom:4px;font-weight:700;}
+.bigq{text-align:center;font-size:15px;color:#aaa;}
+.hint{text-align:center;font-size:12px;color:#aaa;margin-top:10px;}
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99;}
+.warn{background:#fff6d6;border:2px solid #ffd84a;border-radius:12px;padding:10px;font-size:13px;color:#7a5b00;margin-bottom:8px;}
+.soundbar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;margin:8px 0;box-shadow:0 2px 0 rgba(0,0,0,.06);}
+.soundbar .tbtn{background:var(--blue);color:#fff;border:none;border-radius:12px;padding:13px 16px;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.14);white-space:nowrap;}
+.soundbar .tbtn:active{transform:translateY(2px);}
+.soundbar .tnote{font-size:12.5px;color:#555;font-weight:700;line-height:1.35;}
+.linebanner{display:none;background:#fff3d6;border:2px solid #ffb84a;border-radius:14px;padding:12px 14px;margin:8px 0;font-size:14px;color:#7a4b00;font-weight:700;line-height:1.6;}
+.linebanner b{color:#d35400;}
+.whybox{margin-top:10px;background:#eef6ff;border:2px solid #b9dbff;border-radius:12px;padding:11px 14px;font-size:14px;color:#23527a;font-weight:600;line-height:1.65;text-align:left;animation:pop .25s;}
+.whybox b{color:#1c6fd0;}
+.wrongbox{margin-top:10px;background:#fff0f0;border:2px solid #ffc2c2;border-radius:12px;padding:11px 14px;font-size:14px;color:#a33;font-weight:600;line-height:1.65;text-align:left;animation:pop .25s;}
+.wrongbox b{color:#d6357f;font-size:15px;}
+.btn.done{background:var(--green);}
+.donecount{text-align:center;font-size:12px;color:#1f8a3b;font-weight:800;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="display:inline-block;margin-bottom:10px;color:#4a90e2;font-weight:800;text-decoration:none;font-size:14px;background:#fff;border-radius:12px;padding:9px 14px;box-shadow:0 2px 0 rgba(0,0,0,.08)">← おべんきょうサイトにもどる</a>
+  <div class="topbar">
+    <svg class="mascot" viewBox="0 0 100 100">
+      <circle cx="50" cy="52" r="40" fill="#ffd23f"/>
+      <circle cx="38" cy="46" r="6" fill="#2b2b3a"/><circle cx="62" cy="46" r="6" fill="#2b2b3a"/>
+      <circle cx="40" cy="44" r="2" fill="#fff"/><circle cx="64" cy="44" r="2" fill="#fff"/>
+      <path d="M38 64 Q50 74 62 64" stroke="#2b2b3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <circle cx="28" cy="58" r="6" fill="#ff9aa2" opacity=".7"/><circle cx="72" cy="58" r="6" fill="#ff9aa2" opacity=".7"/>
+    </svg>
+    <h1>きそえいご れんしゅうアプリ<small>NHKラジオ 基礎英語レベル1 ／ 4〜6月（Lesson 1〜60）</small></h1>
+  </div>
+
+  <div id="lineBanner" class="linebanner">
+    📣 <b>いま LINE の中で開いているよ。このままだと英語の音が出ないことがあるんだ。</b><br>
+    画面の<b>右下の「↗」マーク</b>（または「…」メニュー）を押して、<b>「Safariで開く」</b>をえらんでね。そうすると音が出るよ！
+  </div>
+  <div class="soundbar">
+    <button class="tbtn" id="testSound">🔊 おとを ためす</button>
+    <div class="tnote" id="testNote">さいしょに ここを押して、音が出るかチェック！<br>出なかったら、上の案内のとおり <b>Safariで開いてね</b>。</div>
+  </div>
+  <div id="speechWarn" class="warn" style="display:none">
+    ⚠ この画面では英語の読み上げが使えないみたい。<b>Safari</b>で開くと音が出やすいよ。文字とクイズは全部つかえるよ！
+  </div>
+
+  <div class="row" id="months">
+    <button class="chip on" data-m="all">ぜんぶ</button>
+    <button class="chip m4" data-m="4">4月 L1-20</button>
+    <button class="chip m5" data-m="5">5月 L21-40</button>
+    <button class="chip m6" data-m="6">6月 L41-60</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-mode="flash">🃏 重要英文カード</button>
+    <button class="tab" data-mode="listen">🎧 リスニングクイズ</button>
+    <button class="tab" data-mode="word">📚 単語カード</button>
+  </div>
+
+  <div class="panel" id="panel"></div>
+  <div class="hint">🔊ボタンで英語が聞けるよ（音が出ない時は端末の音量を確認してね）。たくさん声に出して練習しよう！</div>
+</div>
+<canvas class="confetti" id="cv"></canvas>
+
+<script>
+const DATA = {"cards": [{"m": 4, "n": 1, "title": "健とケン", "point": "I'm 〜.（be動詞・自己紹介）", "en": "I'm a junior high school student.", "jp": "わたしは中学生です。"}, {"m": 4, "n": 2, "title": "すごく似てるね", "point": "I'm a member of 〜. / I'm from 〜.", "en": "I'm a member of the American karate team.", "jp": "わたしはアメリカの空手チームの一員です。"}, {"m": 4, "n": 3, "title": "得意と苦手", "point": "I'm not 〜.（be動詞の否定文）", "en": "I'm not good at sports.", "jp": "わたしはスポーツが得意ではありません。"}, {"m": 4, "n": 4, "title": "マンガも好き", "point": "Are you 〜?（be動詞の疑問文）", "en": "Are you an anime fan?", "jp": "あなたはアニメのファンですか。"}, {"m": 4, "n": 6, "title": "双子だね！", "point": "I like 〜.（一般動詞）", "en": "I like learning.", "jp": "わたしは学ぶことが好きです。"}, {"m": 4, "n": 7, "title": "魚のお弁当", "point": "I don't like 〜.（一般動詞の否定文）", "en": "I don't like fish.", "jp": "わたしは魚が好きではありません。"}, {"m": 4, "n": 8, "title": "ケンの住む町", "point": "Do you 〜?（一般動詞の疑問文）", "en": "Do you know San Francisco?", "jp": "あなたはサンフランシスコを知っていますか。"}, {"m": 4, "n": 9, "title": "たくさんのスポーツ", "point": "What do you 〜?（疑問詞 what）", "en": "What do you play?", "jp": "あなたは何をしますか。"}, {"m": 4, "n": 11, "title": "古いカメラ", "point": "This is 〜. / That is 〜.", "en": "This is my grandfather's camera.", "jp": "これはわたしのおじいさんのカメラです。"}, {"m": 4, "n": 12, "title": "トロフィー", "point": "Is this/that 〜?（this/that の疑問文）", "en": "Is that your trophy?", "jp": "あれはあなたのトロフィーですか。"}, {"m": 4, "n": 13, "title": "写真とってよ", "point": "She is 〜. / He is 〜.（三人称 she/he）", "en": "She is so cool.", "jp": "彼女はとてもクールです。"}, {"m": 4, "n": 14, "title": "きみがぼく！", "point": "Who is 〜?（疑問詞 who）", "en": "Who is that?", "jp": "あれはだれですか。"}, {"m": 4, "n": 16, "title": "魔法のカメラ?!", "point": "I can 〜.（can・できる）", "en": "I can fix it.", "jp": "わたしはそれをもとどおりにすることができます。"}, {"m": 4, "n": 17, "title": "選択の余地はない", "point": "I can't 〜.（can't・できない）", "en": "I can't do karate.", "jp": "わたしは空手ができません。"}, {"m": 4, "n": 18, "title": "時間がない", "point": "Can you 〜?（can の疑問文）", "en": "Can you speak Japanese?", "jp": "あなたは日本語を話すことができますか。"}, {"m": 4, "n": 19, "title": "どこに住んでる?", "point": "Where do you 〜?（疑問詞 where）", "en": "Where do you live?", "jp": "あなたはどこに住んでいるのですか。"}, {"m": 5, "n": 21, "title": "夢じゃない", "point": "主語+be動詞+場所（存在）＋前置詞 in/at/on", "en": "We're at the airport.", "jp": "わたしたちは空港にいます。"}, {"m": 5, "n": 22, "title": "お帰り", "point": "What is this? — It's 〜.", "en": "What is this? — It's a skateboard.", "jp": "これは何ですか。— それはスケートボードです。"}, {"m": 5, "n": 23, "title": "おやつあるよ", "point": "These/Those are 〜.（複数）", "en": "Those are raisins.", "jp": "それらはレーズンです。"}, {"m": 5, "n": 24, "title": "学校でしょ", "point": "A and B（〜と〜）／ we に置きかえ", "en": "Dad and I have plans tonight.", "jp": "お父さんとわたしは今夜、予定があります。"}, {"m": 5, "n": 26, "title": "ロッカーの前で", "point": "所有格 my / your / his / her（〜の）", "en": "This is your locker.", "jp": "これはあなたのロッカーです。"}, {"m": 5, "n": 27, "title": "すごいキック", "point": "所有格 our / their / your（複数の〜の）", "en": "Ken is our captain.", "jp": "ケンはわたしたちのキャプテンです。"}, {"m": 5, "n": 28, "title": "あの部屋は", "point": "Whose 〜?（だれの〜）", "en": "Whose office is that?", "jp": "あれはだれのオフィスですか。"}, {"m": 5, "n": 29, "title": "カフェテリアで", "point": "名前's / 所有代名詞 mine, yours, his, hers …", "en": "That's Sarah's.", "jp": "それはサラのものです。"}, {"m": 5, "n": 31, "title": "碁をいつもやるよね", "point": "頻度の副詞 always / usually / often / sometimes / never", "en": "We always play Go on Mondays.", "jp": "わたしたちはいつも月曜日に碁をします。"}, {"m": 5, "n": 32, "title": "朝型人間?", "point": "What time do you 〜?（何時に）", "en": "What time do you usually get up?", "jp": "あなたはふだん何時に起きますか。"}, {"m": 5, "n": 33, "title": "空手部に入る?", "point": "When do you 〜?（いつ）", "en": "When do you practice karate?", "jp": "あなたはいつ空手の練習をするのですか。"}, {"m": 5, "n": 34, "title": "日本はどう?", "point": "How do you like 〜?（どう・どのように）", "en": "How do you like Japan?", "jp": "日本はどうですか。"}, {"m": 5, "n": 36, "title": "秘密", "point": "like / love / enjoy + 〜ing（動名詞）", "en": "I love solving problems.", "jp": "わたしは問題を解決することが大好きです。"}, {"m": 5, "n": 37, "title": "オンラインで会話", "point": "go + 〜ing（〜しに行く）", "en": "I go skateboarding.", "jp": "わたしはスケートボードをしに行きます。"}, {"m": 5, "n": 38, "title": "演じてね", "point": "How often do you 〜?（どのくらいの頻度で）", "en": "How often do you practice water polo? — I practice every weekend.", "jp": "あなたはどのくらい水球を練習しますか。— 毎週末に練習します。"}, {"m": 5, "n": 39, "title": "折り紙", "point": "Which do you like, A or B?（どちら）", "en": "Which do you like, doing origami or making green tea?", "jp": "折り紙を折るのとお茶をいれるのは、どちらが好きですか。"}, {"m": 6, "n": 41, "title": "夏休みの予定", "point": "三人称単数現在：動詞に -s / -es", "en": "He goes to camp with me every summer.", "jp": "彼は毎年夏に、わたしといっしょにキャンプに行きます。"}, {"m": 6, "n": 42, "title": "学校は?", "point": "三単現の不規則変化：have→has, study→studies, do→does", "en": "She has a cool new surfboard.", "jp": "彼女はかっこいい新しいサーフボードを持っています。"}, {"m": 6, "n": 43, "title": "ガールフレンド?", "point": "三単現の否定文：doesn't + 動詞の原形", "en": "She doesn't have a boyfriend.", "jp": "彼女にはボーイフレンドはいません。"}, {"m": 6, "n": 44, "title": "じゃあ、またね", "point": "三単現の疑問文：Does + 主語 + 動詞の原形 〜?", "en": "Does she live near me?", "jp": "彼女はわたしの家の近くに住んでいますか。"}, {"m": 6, "n": 46, "title": "覚えてる?", "point": "any（疑問文・否定文での「いくつか／少しも」）", "en": "Does Sarah have any brothers or sisters?", "jp": "サラには兄弟か姉妹はいるのですか。"}, {"m": 6, "n": 47, "title": "水球の練習", "point": "疑問詞 + does +主語+動詞の原形（Where does he 〜?）", "en": "Where does he go?", "jp": "彼はどこに行くのですか。"}, {"m": 6, "n": 48, "title": "帰り道", "point": "主語をたずねる Who 〜?（Who cooks? — My mom does.）", "en": "Who usually cooks at your house? — My mom does.", "jp": "ふだんだれがあなたの家で料理をするのですか。— お母さんがします。"}, {"m": 6, "n": 49, "title": "かわいい?", "point": "How many times 〜?（何回）／ once, twice, 〜 times", "en": "How many times a week does Steve surf? — He surfs two or three times a week.", "jp": "スティーブは週に何回サーフィンをしますか。— 週に2、3回します。"}, {"m": 6, "n": 51, "title": "できるよ!", "point": "can + 動詞の原形（主語が三人称単数でも can は同じ）", "en": "Tomisaka Ken can make a perfect origami crane.", "jp": "富坂健は完ぺきな折り紙の鶴をつくることができます。"}, {"m": 6, "n": 52, "title": "健のおじいさん", "point": "目的格の代名詞 me / you / him / her / it（〜を・〜に）", "en": "I like him.", "jp": "わたしは彼が好きです。"}, {"m": 6, "n": 53, "title": "鉄道ファン", "point": "目的格の代名詞 them / us（〜を・〜に）", "en": "Ken knows them.", "jp": "健は彼らを知っています。"}, {"m": 6, "n": 54, "title": "とにかく練習!", "point": "It's 〜.（曜日・時間・天気・距離の it）", "en": "It's Thursday.", "jp": "木曜日です。"}, {"m": 6, "n": 56, "title": "梅雨の気晴らし", "point": "Let's + 動詞の原形（〜しよう）", "en": "Let's play table tennis.", "jp": "卓球をしましょう。"}, {"m": 6, "n": 57, "title": "アメリカのコミック", "point": "命令文（動詞で始める／〜しなさい）", "en": "Go to bed now.", "jp": "そろそろ寝なさい。"}, {"m": 6, "n": 58, "title": "図書館にて", "point": "be動詞の命令文（Be 〜. / 〜の状態になりなさい）", "en": "Be quiet.", "jp": "静かにしなさい。"}, {"m": 6, "n": 59, "title": "ケンの動揺", "point": "否定の命令文（Don't + 動詞 / 〜しないで）", "en": "Don't talk to her.", "jp": "彼女に話しかけないで。"}], "vocab": [{"m": 4, "en": "name", "jp": "名前"}, {"m": 4, "en": "junior high school student", "jp": "中学生"}, {"m": 4, "en": "Me, too.", "jp": "わたしも。"}, {"m": 4, "en": "Nice to meet you.", "jp": "はじめまして。"}, {"m": 4, "en": "Really?", "jp": "本当に？"}, {"m": 4, "en": "Wow!", "jp": "わあ！"}, {"m": 4, "en": "full name", "jp": "フルネーム"}, {"m": 4, "en": "team", "jp": "チーム"}, {"m": 4, "en": "close", "jp": "近い・似ている"}, {"m": 4, "en": "a member of 〜", "jp": "〜の一員"}, {"m": 4, "en": "American", "jp": "アメリカの"}, {"m": 4, "en": "Cool!", "jp": "かっこいい！"}, {"m": 4, "en": "from 〜", "jp": "〜出身"}, {"m": 4, "en": "be good at 〜", "jp": "〜が得意である"}, {"m": 4, "en": "photography", "jp": "写真をとること"}, {"m": 4, "en": "sports", "jp": "スポーツ"}, {"m": 4, "en": "love", "jp": "大好き"}, {"m": 4, "en": "water polo", "jp": "水球"}, {"m": 4, "en": "surf", "jp": "サーフィンをする"}, {"m": 4, "en": "skateboard", "jp": "スケートボードをする"}, {"m": 4, "en": "amazing", "jp": "おどろくべき・すごい"}, {"m": 4, "en": "fan", "jp": "ファン"}, {"m": 4, "en": "How about 〜?", "jp": "〜はどう？"}, {"m": 4, "en": "comic books", "jp": "マンガ本"}, {"m": 4, "en": "sci-fi", "jp": "SF（空想科学）"}, {"m": 4, "en": "stuff", "jp": "もの"}, {"m": 4, "en": "superheroes", "jp": "スーパーヒーロー"}, {"m": 4, "en": "another", "jp": "もうひとりの"}, {"m": 4, "en": "twins", "jp": "双子"}, {"m": 4, "en": "take pictures", "jp": "写真をとる"}, {"m": 4, "en": "nerd", "jp": "オタク・マニア"}, {"m": 4, "en": "Exactly.", "jp": "そのとおり。"}, {"m": 4, "en": "That's true.", "jp": "確かに。"}, {"m": 4, "en": "look", "jp": "見る"}, {"m": 4, "en": "know", "jp": "知っている"}, {"m": 4, "en": "have", "jp": "食べる・持っている"}, {"m": 4, "en": "fish", "jp": "魚"}, {"m": 4, "en": "Japanese", "jp": "日本の・日本人"}, {"m": 4, "en": "food", "jp": "食べ物"}, {"m": 4, "en": "picky eater", "jp": "好ききらいが多い人"}, {"m": 4, "en": "a lot of 〜", "jp": "たくさんの〜"}, {"m": 4, "en": "hometown", "jp": "故郷"}, {"m": 4, "en": "Of course.", "jp": "もちろん。"}, {"m": 4, "en": "girlfriend", "jp": "ガールフレンド"}, {"m": 4, "en": "old friends", "jp": "幼なじみ"}, {"m": 4, "en": "I see.", "jp": "なるほど。"}, {"m": 4, "en": "summer", "jp": "夏"}, {"m": 4, "en": "winter", "jp": "冬"}, {"m": 4, "en": "table tennis", "jp": "卓球"}, {"m": 4, "en": "everything", "jp": "すべて"}, {"m": 4, "en": "nice", "jp": "すてきな"}, {"m": 4, "en": "camera", "jp": "カメラ"}, {"m": 4, "en": "grandfather", "jp": "おじいさん"}, {"m": 4, "en": "Let's go!", "jp": "行こう！"}, {"m": 4, "en": "coach", "jp": "コーチ"}, {"m": 4, "en": "See you.", "jp": "またね。"}, {"m": 4, "en": "your", "jp": "あなたの"}, {"m": 4, "en": "trophy", "jp": "トロフィー"}, {"m": 4, "en": "sixth place", "jp": "6位"}, {"m": 4, "en": "third", "jp": "3位の"}, {"m": 4, "en": "great", "jp": "すばらしい"}, {"m": 4, "en": "okay", "jp": "まあまあ"}, {"m": 4, "en": "email", "jp": "Eメール"}, {"m": 4, "en": "share", "jp": "共有する"}, {"m": 4, "en": "with 〜", "jp": "〜といっしょに"}, {"m": 4, "en": "Good idea.", "jp": "いい考えだね。"}, {"m": 4, "en": "data", "jp": "容量・データ"}, {"m": 4, "en": "use", "jp": "使う"}, {"m": 4, "en": "Say cheese!", "jp": "はい、チーズ！"}, {"m": 4, "en": "who", "jp": "だれ"}, {"m": 4, "en": "That's me.", "jp": "わたしだ。"}, {"m": 4, "en": "Wait.", "jp": "待って。"}, {"m": 4, "en": "how", "jp": "どうやって"}, {"m": 4, "en": "gone", "jp": "なくなって"}, {"m": 4, "en": "face", "jp": "顔"}, {"m": 4, "en": "fix", "jp": "修理する・直す"}, {"m": 4, "en": "magic", "jp": "魔法"}, {"m": 4, "en": "maybe", "jp": "たぶん"}, {"m": 4, "en": "It's time.", "jp": "時間だ。"}, {"m": 4, "en": "well", "jp": "じょうずに"}, {"m": 4, "en": "No way!", "jp": "ありえない！"}, {"m": 4, "en": "stay", "jp": "とどまる"}, {"m": 4, "en": "choice", "jp": "選択"}, {"m": 4, "en": "try", "jp": "やってみる"}, {"m": 4, "en": "I guess.", "jp": "そうだと思う。"}, {"m": 4, "en": "live", "jp": "住む"}, {"m": 4, "en": "speak", "jp": "話す"}, {"m": 4, "en": "mouth", "jp": "口"}, {"m": 4, "en": "anyway", "jp": "とにかく"}, {"m": 4, "en": "new", "jp": "新しい"}, {"m": 4, "en": "I can't believe it.", "jp": "信じられない。"}, {"m": 4, "en": "totally", "jp": "まったく・完全に"}, {"m": 4, "en": "celebrate", "jp": "祝う"}, {"m": 4, "en": "sure", "jp": "もちろん"}, {"m": 4, "en": "where", "jp": "どこ"}, {"m": 4, "en": "neighbor", "jp": "近所の人"}, {"m": 4, "en": "Oh, right.", "jp": "あ、そうだったね。"}, {"m": 5, "en": "Wake up.", "jp": "起きて。"}, {"m": 5, "en": "strange", "jp": "変な"}, {"m": 5, "en": "dream", "jp": "夢"}, {"m": 5, "en": "airport", "jp": "空港"}, {"m": 5, "en": "relax", "jp": "落ち着く"}, {"m": 5, "en": "jet lag", "jp": "時差ぼけ"}, {"m": 5, "en": "dude", "jp": "おい・ねえ"}, {"m": 5, "en": "What's up?", "jp": "調子はどう？"}, {"m": 5, "en": "funny", "jp": "おもしろい"}, {"m": 5, "en": "It's me.", "jp": "わたしです。"}, {"m": 5, "en": "best", "jp": "一番の"}, {"m": 5, "en": "Welcome home.", "jp": "お帰り。"}, {"m": 5, "en": "yours", "jp": "あなたのもの"}, {"m": 5, "en": "honey", "jp": "いとしい人"}, {"m": 5, "en": "hungry", "jp": "おなかがすいた"}, {"m": 5, "en": "snack", "jp": "おやつ"}, {"m": 5, "en": "Sit down.", "jp": "座って。"}, {"m": 5, "en": "Here.", "jp": "はい、どうぞ。"}, {"m": 5, "en": "favorite", "jp": "大好物"}, {"m": 5, "en": "those", "jp": "あれら・それら"}, {"m": 5, "en": "Time to go.", "jp": "行く時間だ。"}, {"m": 5, "en": "take", "jp": "連れていく"}, {"m": 5, "en": "backpack", "jp": "リュックサック"}, {"m": 5, "en": "plans", "jp": "予定"}, {"m": 5, "en": "tonight", "jp": "今夜"}, {"m": 5, "en": "dinner", "jp": "夕食"}, {"m": 5, "en": "order", "jp": "注文する"}, {"m": 5, "en": "Over here.", "jp": "こっちだよ。"}, {"m": 5, "en": "almost", "jp": "もう少しで"}, {"m": 5, "en": "class", "jp": "授業"}, {"m": 5, "en": "textbook", "jp": "教科書"}, {"m": 5, "en": "locker", "jp": "ロッカー"}, {"m": 5, "en": "combination", "jp": "暗証番号"}, {"m": 5, "en": "choose", "jp": "選ぶ"}, {"m": 5, "en": "captain", "jp": "キャプテン"}, {"m": 5, "en": "our", "jp": "わたしたちの"}, {"m": 5, "en": "be bad at 〜", "jp": "〜が苦手である"}, {"m": 5, "en": "kick", "jp": "ける"}, {"m": 5, "en": "first", "jp": "最初に"}, {"m": 5, "en": "Run!", "jp": "走れ！"}, {"m": 5, "en": "whose", "jp": "だれの"}, {"m": 5, "en": "office", "jp": "部屋・オフィス"}, {"m": 5, "en": "principal", "jp": "校長先生"}, {"m": 5, "en": "there", "jp": "そこに"}, {"m": 5, "en": "all the time", "jp": "いつも"}, {"m": 5, "en": "joke", "jp": "冗談"}, {"m": 5, "en": "troublemaker", "jp": "問題児"}, {"m": 5, "en": "today's", "jp": "きょうの"}, {"m": 5, "en": "lunch", "jp": "昼食"}, {"m": 5, "en": "come over", "jp": "来る・立ち寄る"}, {"m": 5, "en": "sit", "jp": "座る"}, {"m": 5, "en": "seat", "jp": "席"}, {"m": 5, "en": "why", "jp": "なぜ"}, {"m": 5, "en": "fine", "jp": "元気な"}, {"m": 5, "en": "different", "jp": "ちがった"}, {"m": 5, "en": "No way.", "jp": "まさか。"}, {"m": 5, "en": "hang out", "jp": "友だちと過ごす"}, {"m": 5, "en": "always", "jp": "いつも"}, {"m": 5, "en": "Monday", "jp": "月曜日"}, {"m": 5, "en": "Good morning.", "jp": "おはよう。"}, {"m": 5, "en": "sleepy", "jp": "ねむい"}, {"m": 5, "en": "super", "jp": "とても"}, {"m": 5, "en": "early", "jp": "早い"}, {"m": 5, "en": "what time", "jp": "何時"}, {"m": 5, "en": "get up", "jp": "起きる"}, {"m": 5, "en": "a.m.", "jp": "午前"}, {"m": 5, "en": "question", "jp": "質問"}, {"m": 5, "en": "when", "jp": "いつ"}, {"m": 5, "en": "practice", "jp": "練習する"}, {"m": 5, "en": "Tuesday", "jp": "火曜日"}, {"m": 5, "en": "Thursday", "jp": "木曜日"}, {"m": 5, "en": "join", "jp": "参加する"}, {"m": 5, "en": "How do you like 〜?", "jp": "〜はどう？"}, {"m": 5, "en": "everything", "jp": "すべてのこと"}, {"m": 5, "en": "new", "jp": "新しい"}, {"m": 5, "en": "learn", "jp": "学ぶ"}, {"m": 5, "en": "a lot", "jp": "たくさん"}, {"m": 5, "en": "real", "jp": "本当の"}, {"m": 5, "en": "switch", "jp": "入れかわる"}, {"m": 5, "en": "body", "jp": "体"}, {"m": 5, "en": "sorry", "jp": "すまなく思って"}, {"m": 5, "en": "That's okay.", "jp": "だいじょうぶ。"}, {"m": 5, "en": "solve", "jp": "解決する"}, {"m": 5, "en": "problem", "jp": "問題"}, {"m": 5, "en": "keep 〜 secret", "jp": "〜の秘密を守る"}, {"m": 5, "en": "really", "jp": "本当に"}, {"m": 5, "en": "confusing", "jp": "わけがわからない"}, {"m": 5, "en": "go skateboarding", "jp": "スケボーをしに行く"}, {"m": 5, "en": "all weekend", "jp": "週末ずっと"}, {"m": 5, "en": "often", "jp": "よく・しばしば"}, {"m": 5, "en": "Fine.", "jp": "わかった。"}, {"m": 5, "en": "cultural activity", "jp": "文化的な活動"}, {"m": 5, "en": "do origami", "jp": "折り紙を折る"}, {"m": 5, "en": "or", "jp": "または"}, {"m": 5, "en": "make green tea", "jp": "緑茶をいれる"}, {"m": 5, "en": "teach", "jp": "教える"}, {"m": 5, "en": "Let's get started.", "jp": "さあ始めよう。"}, {"m": 6, "en": "summer vacation", "jp": "夏休み"}, {"m": 6, "en": "nope", "jp": "いいえ"}, {"m": 6, "en": "camp", "jp": "キャンプ"}, {"m": 6, "en": "every 〜", "jp": "どの〜も"}, {"m": 6, "en": "August", "jp": "8月"}, {"m": 6, "en": "July", "jp": "7月"}, {"m": 6, "en": "every year", "jp": "毎年"}, {"m": 6, "en": "What about 〜?", "jp": "〜はどうなの？"}, {"m": 6, "en": "out", "jp": "終わって"}, {"m": 6, "en": "until 〜", "jp": "〜までずっと"}, {"m": 6, "en": "September", "jp": "9月"}, {"m": 6, "en": "June", "jp": "6月"}, {"m": 6, "en": "surfboard", "jp": "サーフボード"}, {"m": 6, "en": "You wish.", "jp": "そうだといいね。"}, {"m": 6, "en": "yet", "jp": "まだ"}, {"m": 6, "en": "said", "jp": "言った"}, {"m": 6, "en": "I mean", "jp": "つまり"}, {"m": 6, "en": "Nothing.", "jp": "なんでもない。"}, {"m": 6, "en": "boyfriend", "jp": "ボーイフレンド"}, {"m": 6, "en": "excited", "jp": "ワクワクした"}, {"m": 6, "en": "heard", "jp": "聞いた"}, {"m": 6, "en": "see", "jp": "会う"}, {"m": 6, "en": "See you around.", "jp": "じゃあ、またね。"}, {"m": 6, "en": "smiled", "jp": "ほほえんだ"}, {"m": 6, "en": "near", "jp": "近くに"}, {"m": 6, "en": "still", "jp": "まだ"}, {"m": 6, "en": "a little", "jp": "少し"}, {"m": 6, "en": "Weird.", "jp": "変なの。"}, {"m": 6, "en": "any", "jp": "いくつかの"}, {"m": 6, "en": "older", "jp": "年上の"}, {"m": 6, "en": "remember", "jp": "覚えている"}, {"m": 6, "en": "watch out for 〜", "jp": "〜に注意する"}, {"m": 6, "en": "defense", "jp": "守備"}, {"m": 6, "en": "position", "jp": "ポジション"}, {"m": 6, "en": "center", "jp": "真ん中"}, {"m": 6, "en": "get started", "jp": "始める"}, {"m": 6, "en": "kids", "jp": "みんな"}, {"m": 6, "en": "lost", "jp": "負けた"}, {"m": 6, "en": "game", "jp": "試合"}, {"m": 6, "en": "tomorrow", "jp": "あした"}, {"m": 6, "en": "almost", "jp": "もうすぐ"}, {"m": 6, "en": "cook", "jp": "料理する"}, {"m": 6, "en": "house", "jp": "家"}, {"m": 6, "en": "think", "jp": "思う"}, {"m": 6, "en": "recently", "jp": "最近"}, {"m": 6, "en": "awesome", "jp": "最高"}, {"m": 6, "en": "cute", "jp": "かわいい"}, {"m": 6, "en": "shy", "jp": "内気な"}, {"m": 6, "en": "a week", "jp": "1週間に"}, {"m": 6, "en": "together", "jp": "いっしょに"}, {"m": 6, "en": "give up", "jp": "あきらめる"}, {"m": 6, "en": "important", "jp": "大事な"}, {"m": 6, "en": "paper", "jp": "紙"}, {"m": 6, "en": "perfect", "jp": "完ぺきな"}, {"m": 6, "en": "crane", "jp": "鶴"}, {"m": 6, "en": "show", "jp": "教える・見せる"}, {"m": 6, "en": "again", "jp": "もう一度"}, {"m": 6, "en": "study", "jp": "勉強する"}, {"m": 6, "en": "Lucky you.", "jp": "いいなあ。"}, {"m": 6, "en": "too 〜", "jp": "〜すぎる"}, {"m": 6, "en": "for fun", "jp": "楽しみに"}, {"m": 6, "en": "same", "jp": "同じ"}, {"m": 6, "en": "unique", "jp": "独特の"}, {"m": 6, "en": "group", "jp": "グループ"}, {"m": 6, "en": "train", "jp": "電車・鉄道"}, {"m": 6, "en": "take pictures of 〜", "jp": "〜の写真をとる"}, {"m": 6, "en": "sometimes", "jp": "ときどき"}, {"m": 6, "en": "sports car", "jp": "スポーツカー"}, {"m": 6, "en": "come over", "jp": "訪ねる"}, {"m": 6, "en": "life", "jp": "人生"}, {"m": 6, "en": "hard", "jp": "大変な"}, {"m": 6, "en": "What day is today?", "jp": "きょうは何曜日？"}, {"m": 6, "en": "hot", "jp": "暑い"}, {"m": 6, "en": "weather", "jp": "天気"}, {"m": 6, "en": "rainy season", "jp": "梅雨"}, {"m": 6, "en": "season", "jp": "季節"}, {"m": 6, "en": "whole", "jp": "まるごと"}, {"m": 6, "en": "competition", "jp": "勝負・試合"}, {"m": 6, "en": "nearby", "jp": "近くに"}, {"m": 6, "en": "shop", "jp": "店"}, {"m": 6, "en": "awake", "jp": "起きている"}, {"m": 6, "en": "tablet", "jp": "タブレット"}, {"m": 6, "en": "late", "jp": "おそい"}, {"m": 6, "en": "go to bed", "jp": "寝る"}, {"m": 6, "en": "Good night.", "jp": "おやすみ。"}, {"m": 6, "en": "mind", "jp": "心・精神"}, {"m": 6, "en": "pretty", "jp": "かなり"}, {"m": 6, "en": "revenge", "jp": "リベンジ"}, {"m": 6, "en": "quiet", "jp": "静かな"}, {"m": 6, "en": "you two", "jp": "あなたたちふたり"}, {"m": 6, "en": "met", "jp": "会った"}, {"m": 6, "en": "talk to 〜", "jp": "〜に話しかける"}, {"m": 6, "en": "embarrass", "jp": "恥ずかしい思いをさせる"}, {"m": 6, "en": "crush", "jp": "好きな人"}], "listening": [{"m": 4, "q": "Are you an anime fan?", "correct": "Yes, I am.", "options": ["Yes, I am.", "Yes, I do.", "It's a camera."], "ex": "Are you〜? は be動詞の疑問文。答えも be動詞で「Yes, I am. / No, I'm not.」。Yes, I do. は一般動詞用なので×。"}, {"m": 4, "q": "Do you know San Francisco?", "correct": "Of course! I do.", "options": ["No, I'm not.", "Of course! I do.", "She is cool."], "ex": "Do you〜? は一般動詞の疑問文。答えは do/don't を使う（Of course! I do.＝うん、知ってるよ）。No, I'm not. は be動詞用なので×。"}, {"m": 4, "q": "Nice to meet you.", "correct": "Nice to meet you, too.", "options": ["Nice to meet you, too.", "Yes, I can.", "It's old."], "ex": "はじめましてのあいさつには「Nice to meet you, too.（こちらこそ）」と返す。"}, {"m": 4, "q": "What do you play?", "correct": "I play soccer and tennis.", "options": ["I play soccer and tennis.", "Yes, I do.", "No, thank you."], "ex": "What（何を）でたずねているので、何をするかを具体的に答える。Yes/No では答えない。"}, {"m": 4, "q": "Who is that?", "correct": "That's my coach.", "options": ["That's my coach.", "Yes, it is.", "I'm a student."], "ex": "Who（だれ）の質問には人を答える。「That's my coach.（あれはコーチだよ）」。Yes, it is. では答えにならない。"}, {"m": 4, "q": "Is that your trophy?", "correct": "Yes, it is.", "options": ["Yes, it is.", "Yes, I am.", "I like it."], "ex": "Is that〜? は be動詞の疑問文。物なので「Yes, it is. / No, it isn't.」で答える。"}, {"m": 4, "q": "Can you speak Japanese?", "correct": "No, I can't.", "options": ["No, I can't.", "No, I don't.", "It's a dog."], "ex": "Can you〜? には can で答える（Yes, I can. / No, I can't.）。No, I don't. は一般動詞用なので×。"}, {"m": 4, "q": "Where do you live?", "correct": "I live in San Francisco.", "options": ["I live in San Francisco.", "Yes, I do.", "He is kind."], "ex": "Where（どこ）には場所を答える。「in San Francisco（サンフランシスコに）」。Yes/No では答えない。"}, {"m": 5, "q": "What is this?", "correct": "It's a skateboard.", "options": ["It's a skateboard.", "Yes, it is.", "I'm fine."], "ex": "What is this?（これは何）には「It's 〜.」で物を答える。"}, {"m": 5, "q": "Whose office is that?", "correct": "That's the principal's office.", "options": ["That's the principal's office.", "Yes, it is.", "I like it."], "ex": "Whose（だれの）には『だれの物か』を答える。「principal's（校長先生の）office」。"}, {"m": 5, "q": "What time do you usually get up?", "correct": "At six a.m.", "options": ["At six a.m.", "On Mondays.", "Yes, I do."], "ex": "What time（何時に）には時刻を「At 〜」で答える。On Mondays.（曜日）は When 用なので×。"}, {"m": 5, "q": "When do you practice karate?", "correct": "On Tuesdays and Thursdays.", "options": ["On Tuesdays and Thursdays.", "At the airport.", "It's mine."], "ex": "When（いつ）には曜日や時を答える。「On Tuesdays and Thursdays（火・木曜日に）」。"}, {"m": 5, "q": "How do you like Japan?", "correct": "It's great! Everything is new.", "options": ["It's great! Everything is new.", "Yes, I do.", "He is my brother."], "ex": "How do you like 〜?（〜はどう？）には感想を答える。Yes/No では答えない。"}, {"m": 5, "q": "How often do you practice water polo?", "correct": "I practice every weekend.", "options": ["I practice every weekend.", "Yes, I am.", "It's a raisin."], "ex": "How often（どのくらいの頻度で）には頻度を答える。「every weekend（毎週末）」。"}, {"m": 5, "q": "Which do you like, tea or coffee?", "correct": "I like tea.", "options": ["I like tea.", "Yes, I do.", "On Sundays."], "ex": "Which A or B?（A と B どっち）には、どちらかを選んで答える。「I like tea.」。"}, {"m": 5, "q": "Is this your locker?", "correct": "Yes, it is. The combination is 3-1-5.", "options": ["Yes, it is. The combination is 3-1-5.", "Yes, I am.", "I go skateboarding."], "ex": "Is this〜? は be動詞の疑問文。物なので「Yes, it is.」で答える。"}, {"m": 6, "q": "Does she live near me?", "correct": "Yes, she does.", "options": ["Yes, she does.", "Yes, she is.", "I do."], "ex": "Does 〜? の三単現の疑問文には does で答える（Yes, she does. / No, she doesn't.）。Yes, she is. は be動詞用なので×。"}, {"m": 6, "q": "Does Sarah have any brothers or sisters?", "correct": "She has an older brother, Steve.", "options": ["She has an older brother, Steve.", "Yes, I do.", "It's Thursday."], "ex": "三単現の質問。具体的には「She has 〜（has は have の三単現）」で答える。"}, {"m": 6, "q": "Where does he go?", "correct": "He goes to the center.", "options": ["He goes to the center.", "Yes, he does.", "I'm fine."], "ex": "Where（どこ）＋三単現。場所を「He goes to 〜（goes は go の三単現）」で答える。"}, {"m": 6, "q": "Who usually cooks at your house?", "correct": "My mom does.", "options": ["My mom does.", "Yes, she does.", "It's a pizza."], "ex": "だれが〜する？には「○○ does.」で答える（My mom does.＝お母さんがするよ）。"}, {"m": 6, "q": "How many times a week does Steve surf?", "correct": "He surfs two or three times a week.", "options": ["He surfs two or three times a week.", "Yes, he does.", "On Mondays."], "ex": "How many times（何回）には回数を答える。「two or three times a week（週に2、3回）」。"}, {"m": 6, "q": "What day is today?", "correct": "It's Thursday.", "options": ["It's Thursday.", "Yes, it is.", "He likes it."], "ex": "曜日をたずねる質問。「It's 〜.（曜日の it）」で答える。"}, {"m": 6, "q": "Let's play table tennis!", "correct": "Yes, let's!", "options": ["Yes, let's!", "Yes, I am.", "It's mine."], "ex": "Let's 〜!（〜しよう）には「Yes, let's!（そうしよう）」と返す。"}, {"m": 6, "q": "You're still awake?", "correct": "Yeah. I'm just reading.", "options": ["Yeah. I'm just reading.", "Yes, you do.", "On Tuesdays."], "ex": "「まだ起きてるの？」という確認。理由を添えて「Yeah, I'm just reading.（うん、読書してるだけ）」と自然に答える。"}]};
+let curMonth="all", curMode="flash";
+let idx=0, flipped=false, order=[];
+let qIdx=0, score=0, total=0, answered=false, listenOrder=[];
+
+// ---------- speech ----------
+let voices=[];
+function loadVoices(){ voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }
+if(window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+else { document.getElementById('speechWarn').style.display='block'; }
+// in-app browser (LINE etc.) detection -> guide to open in Safari
+const _ua=navigator.userAgent||"";
+const inApp=/Line|FBAN|FBAV|Instagram|MicroMessenger|; wv\)/i.test(_ua);
+if(inApp){ const lb=document.getElementById('lineBanner'); if(lb) lb.style.display='block'; }
+let warmed=false;
+function warmup(){ if(warmed||!window.speechSynthesis) return; try{const u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u);}catch(e){} warmed=true; loadVoices(); }
+function pickVoice(lang){
+  let v = voices.find(x=>x.lang && x.lang.toLowerCase().startsWith(lang) && /natural|google|samantha|aria|zira/i.test(x.name))
+       || voices.find(x=>x.lang && x.lang.toLowerCase().startsWith(lang));
+  return v||null;
+}
+function speak(text, lang){
+  if(!window.speechSynthesis) return;
+  warmup();
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang = lang==='ja' ? 'ja-JP':'en-US';
+  const v=pickVoice(lang==='ja'?'ja':'en'); if(v) u.voice=v;
+  u.rate = lang==='ja'?1.0:0.85; u.pitch=1.05;
+  speechSynthesis.speak(u);
+}
+
+// ---------- mastered cards (localStorage) ----------
+const EKEY='eigo_done_v1';
+function eload(){try{return JSON.parse(localStorage.getItem(EKEY))||{}}catch(e){return{}}}
+function esave(o){try{localStorage.setItem(EKEY,JSON.stringify(o))}catch(e){}}
+function ckey(c){return c.m+'-'+c.n;}
+function isDone(c){return !!eload()[ckey(c)];}
+function markDone(c){const o=eload();o[ckey(c)]=1;esave(o);}
+function doneCount(){return Object.keys(eload()).length;}
+// ---------- data filters ----------
+function fcards(){ return DATA.cards.filter(c=>curMonth==="all"||c.m==curMonth); }
+function fwords(){ return DATA.vocab.filter(c=>curMonth==="all"||c.m==curMonth); }
+function flisten(){ return DATA.listening.filter(c=>curMonth==="all"||c.m==curMonth); }
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+const AV=["ken","tom","hina","grand","sarah","lucas"];
+function avatar(seed){
+  const t=AV[seed%AV.length];
+  const skin="#ffe0bd", hair={ken:"#3a2a1a",tom:"#5a3210",hina:"#222",grand:"#cfcfcf",sarah:"#caa14a",lucas:"#7a4a1a"}[t];
+  return `<svg class="avatar" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="58" rx="30" ry="32" fill="${skin}"/>
+    <path d="M20 50 Q50 8 80 50 Q80 30 50 22 Q20 30 20 50Z" fill="${hair}"/>
+    <circle cx="40" cy="56" r="5" fill="#2b2b3a"/><circle cx="60" cy="56" r="5" fill="#2b2b3a"/>
+    <circle cx="41.5" cy="54" r="1.6" fill="#fff"/><circle cx="61.5" cy="54" r="1.6" fill="#fff"/>
+    <circle cx="33" cy="66" r="5" fill="#ff9aa2" opacity=".6"/><circle cx="67" cy="66" r="5" fill="#ff9aa2" opacity=".6"/>
+    <path d="M42 72 Q50 79 58 72" stroke="#9a5a4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+const MCOLOR={4:"var(--blue)",5:"var(--purple)",6:"var(--green)"};
+
+// ---------- render ----------
+const panel=document.getElementById('panel');
+function render(){
+  if(curMode==="flash") renderFlash();
+  else if(curMode==="word") renderWord();
+  else renderListen();
+}
+
+function renderFlash(){
+  const list=fcards();
+  if(order.length!==list.length){ order=list.map((_,i)=>i); idx=0; }
+  if(idx>=list.length) idx=0;
+  const c=list[order[idx]];
+  flipped=false;
+  panel.innerHTML=`
+   <div class="counter">${idx+1} / ${list.length} まい</div>
+   <div class="card">
+     <span class="badge" style="background:${MCOLOR[c.m]}">${c.m}月</span>
+     <span class="lesson">Lesson ${c.n}</span>
+     ${avatar(c.n)}
+     <div class="jp">${c.jp}</div>
+     <div class="en" id="en">${c.en}</div>
+     <div class="point" id="pt">💡 ${c.point}</div>
+   </div>
+   <div class="btns">
+     <button class="btn prev" id="prev">◀ まえ</button>
+     <button class="btn flip" id="flip">英語を見る👀</button>
+     <button class="btn speak" id="sp">🔊 きく</button>
+     <button class="btn next" id="next">つぎ ▶</button>
+   </div>
+   <div class="btns"><button class="btn done" id="done">${isDone(c)?'✓ おぼえた！':'✓ できた！'}</button><button class="chip" id="shuf">🔀 シャッフル</button></div>
+   <div class="donecount">⭐ おぼえたカード：${doneCount()} / ${DATA.cards.length}まい</div>`;
+  document.getElementById('flip').onclick=()=>{
+    const en=document.getElementById('en'),pt=document.getElementById('pt');
+    en.classList.add('show');pt.classList.add('show');speak(c.en,'en');
+  };
+  document.getElementById('sp').onclick=()=>{document.getElementById('en').classList.add('show');document.getElementById('pt').classList.add('show');speak(c.en,'en');};
+  document.getElementById('next').onclick=()=>{idx=(idx+1)%list.length;renderFlash();};
+  document.getElementById('prev').onclick=()=>{idx=(idx-1+list.length)%list.length;renderFlash();};
+  document.getElementById('shuf').onclick=()=>{order=shuffle(order);idx=0;renderFlash();};
+  document.getElementById('done').onclick=()=>{ if(!isDone(c)){ markDone(c); pop(); } renderFlash(); };
+}
+
+function renderWord(){
+  const list=fwords();
+  if(order.length!==list.length){ order=list.map((_,i)=>i); idx=0; }
+  if(idx>=list.length) idx=0;
+  const c=list[order[idx]];
+  panel.innerHTML=`
+   <div class="counter">${idx+1} / ${list.length} こ</div>
+   <div class="card" style="border-color:#cfe8d8;background:linear-gradient(160deg,#fff,#f3fbf6)">
+     <span class="badge" style="background:${MCOLOR[c.m]}">${c.m}月</span>
+     <div class="en" style="display:block;color:#1f8a3b;font-size:30px">${c.en}</div>
+     <div class="jp" id="wjp" style="display:none;margin-top:10px">${c.jp}</div>
+   </div>
+   <div class="btns">
+     <button class="btn prev" id="prev">◀</button>
+     <button class="btn flip" id="flip" style="background:var(--green)">意味を見る</button>
+     <button class="btn speak" id="sp">🔊 きく</button>
+     <button class="btn next" id="next">▶</button>
+   </div>
+   <div class="btns"><button class="chip" id="shuf">🔀 シャッフル</button></div>`;
+  document.getElementById('flip').onclick=()=>document.getElementById('wjp').style.display='block';
+  document.getElementById('sp').onclick=()=>speak(c.en,'en');
+  document.getElementById('next').onclick=()=>{idx=(idx+1)%list.length;renderWord();};
+  document.getElementById('prev').onclick=()=>{idx=(idx-1+list.length)%list.length;renderWord();};
+  document.getElementById('shuf').onclick=()=>{order=shuffle(order);idx=0;renderWord();};
+  speak(c.en,'en');
+}
+
+function renderListen(){
+  const list=flisten();
+  if(listenOrder.length!==list.length){ listenOrder=shuffle(list.map((_,i)=>i)); qIdx=0; score=0; total=0; }
+  if(qIdx>=list.length){ renderResult(list.length); return; }
+  const c=list[listenOrder[qIdx]];
+  answered=false;
+  const opts=shuffle(c.options);
+  panel.innerHTML=`
+   <div class="counter">もんだい ${qIdx+1} / ${list.length}　　とくてん：<span class="score">${score}</span></div>
+   <div class="card" style="min-height:150px;border-color:#cfe0ff;background:linear-gradient(160deg,#fff,#f3f8ff)">
+     ${avatar(qIdx+3)}
+     <div class="q">▼ 英文を聞いて、お返事にぴったりなものをえらぼう</div>
+     <button class="btn speak" id="play" style="font-size:18px">🔊 もう一回きく</button>
+     <div class="bigq" id="qt" style="margin-top:8px">（聞き取れたら、ここを見なくてもOK！）</div>
+   </div>
+   <div class="opts" id="opts">
+     ${opts.map((o,i)=>`<button class="opt" data-o="${encodeURIComponent(o)}">${"アイウ"[i]||""}．${o}</button>`).join("")}
+   </div>
+   <div class="feedback" id="fb"></div>
+   <div id="why"></div>
+   <div class="btns"><button class="chip" id="show">英文を表示</button><button class="chip" id="nextq" style="display:none">つぎへ ▶</button></div>`;
+  document.getElementById('play').onclick=()=>speak(c.q,'en');
+  document.getElementById('show').onclick=()=>{document.getElementById('qt').textContent="“"+c.q+"”";};
+  speak(c.q,'en');
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.onclick=()=>{
+      if(answered) return; answered=true; total++;
+      const chosen=decodeURIComponent(b.dataset.o);
+      const fb=document.getElementById('fb');
+      const wb=document.getElementById('why');
+      if(chosen===c.correct){ b.classList.add('correct'); score++; fb.textContent="せいかい！ ⭕ すごい！"; fb.style.color="var(--green)";
+            if(c.ex) wb.innerHTML='<div class="whybox"><b>📖 なぜ？</b> '+c.ex+'</div>'; pop();}
+      else{ b.classList.add('wrong'); fb.textContent="おしい！ ❌"; fb.style.color="#ff5b5b";
+            document.querySelectorAll('.opt').forEach(x=>{if(decodeURIComponent(x.dataset.o)===c.correct)x.classList.add('correct');});
+            wb.innerHTML='<div class="wrongbox"><b>✗ せいかいは「'+c.correct+'」</b>'+(c.ex?'<br><span style="color:#a33">📖 '+c.ex+'</span>':'')+'</div>'; }
+      document.getElementById('nextq').style.display='inline-block';
+    };
+  });
+  document.getElementById('nextq').onclick=()=>{qIdx++;renderListen();};
+}
+
+function renderResult(n){
+  const pct=Math.round(score/Math.max(total,1)*100);
+  let msg = pct===100?"パーフェクト！！ 🏆":pct>=70?"すごい！その調子！ 🎉":"よくがんばった！もう一回チャレンジしよう 💪";
+  panel.innerHTML=`<div class="card" style="min-height:200px">
+     <div style="font-size:40px">${pct>=70?"🎉":"💪"}</div>
+     <div class="jp">${score} / ${total} もん せいかい！</div>
+     <div style="font-size:18px;font-weight:800;color:var(--pink);margin-top:8px">${msg}</div>
+   </div>
+   <div class="btns"><button class="btn next" id="again">もう一回！</button></div>`;
+  if(pct>=70) pop();
+  document.getElementById('again').onclick=()=>{listenOrder=[];renderListen();};
+}
+
+// ---------- confetti ----------
+const cv=document.getElementById('cv');const ctx=cv.getContext('2d');
+function pop(){
+  cv.width=innerWidth;cv.height=innerHeight;
+  let ps=[];for(let i=0;i<80;i++)ps.push({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*12,vy:Math.random()*-12-3,c:`hsl(${Math.random()*360},90%,60%)`,r:Math.random()*6+3});
+  let t=0;function fr(){ctx.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.4;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.r,p.r);});t++;if(t<70)requestAnimationFrame(fr);else ctx.clearRect(0,0,cv.width,cv.height);}fr();
+}
+
+// ---------- events ----------
+document.querySelectorAll('#months .chip').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#months .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  curMonth=b.dataset.m; order=[];listenOrder=[];idx=0;qIdx=0;score=0;total=0;render();
+});
+document.getElementById('testSound').onclick=()=>{
+  if(!window.speechSynthesis){
+    document.getElementById('speechWarn').style.display='block';
+    document.getElementById('testNote').innerHTML="この画面では音が使えないみたい。<b>Safariで開いてね</b>。";
+    return;
+  }
+  warmup(); speak("Hello! Let's study English!","en");
+  document.getElementById('testNote').innerHTML="音は聞こえたかな？ 聞こえたらOK！🎉<br>聞こえないときは <b>Safariで開いてね</b>（上の案内）。";
+};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  curMode=b.dataset.mode; order=[];listenOrder=[];idx=0;qIdx=0;score=0;total=0;render();
+});
+render();
+</script>
+</body></html>
