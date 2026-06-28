@@ -83,6 +83,23 @@ background:linear-gradient(135deg,var(--pink),#ff7eb0);box-shadow:0 6px 0 rgba(0
 .vshard{background:#fff0f0;border:2px solid #ffc2c2;border-radius:12px;padding:10px 12px;font-size:13.5px;color:#a33;line-height:1.6;}
 .vseasy{background:#e9fbef;border:2px solid #a7e6bd;border-radius:12px;padding:10px 12px;font-size:13.5px;color:#1d7a45;font-weight:700;line-height:1.6;}
 .kexample{margin-top:8px;background:#eef6ff;border:2px solid #b9dbff;border-radius:12px;padding:9px 12px;font-size:15px;font-weight:800;color:#1c6fd0;text-align:center;}
+.stat.k{background:#f1edff;border-color:#cdbcff;color:#6b48d6;}
+.btn.usekotsu{background:#8a5cf6;}
+.mmark{font-size:15px;}
+.kcnt{flex:0 0 auto;background:#f1edff;color:#6b48d6;border-radius:10px;padding:3px 8px;font-size:12px;font-weight:800;align-self:center;}
+.kmastery{margin-top:10px;background:#f6f2ff;border:2px solid #e2d8ff;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:700;color:#6b48d6;text-align:center;line-height:1.6;}
+.kmastery b{color:#8a5cf6;}
+.bigbtn.commute{background:linear-gradient(135deg,#3fb6c9,#16b7b0);}
+.commute .ccard{border-radius:18px;padding:26px 18px;background:linear-gradient(160deg,#fff,#f0fbfb);border:3px solid #c9eef0;text-align:center;margin:6px 0;animation:cardin .3s;}
+.commute .cnum{font-size:13px;font-weight:800;color:#16b7b0;margin-bottom:8px;}
+.commute .cq{font-size:24px;font-weight:900;line-height:1.6;color:#23304a;}
+.commute .ca{font-size:22px;font-weight:900;color:var(--teal);margin-top:14px;animation:pop .25s;}
+.cbtns{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;}
+.cbtns .btn{flex:1;min-width:96px;}
+.autobtn{display:block;width:100%;margin-top:12px;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(135deg,#7a5cf6,#9b7be8);box-shadow:0 4px 0 rgba(0,0,0,.12);}
+.autobtn.on{background:linear-gradient(135deg,#ff7eb0,#e0457f);}
+.autobtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.12);}
+.chelp{font-size:12px;color:#9aa;text-align:center;margin-top:10px;line-height:1.5;}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#2b2b3a;color:#fff;padding:12px 18px;border-radius:14px;font-weight:800;z-index:120;opacity:0;transition:opacity .2s;font-size:15px;}
 .toast.show{opacity:.96;}
 .cv{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99;}
@@ -195,6 +212,7 @@ function renderHome(){
     '<div class="dtop">'+
       '<div class="stat s">🔥 '+stk+'日 れんぞく</div>'+
       '<div class="stat">⭐ '+pts+' pt</div>'+
+      '<div class="stat k">💡 コツ '+kotsuTotal()+'回</div>'+
       (wc>0?'<div class="stat w">🔁 ふくしゅう '+wc+'問</div>':'')+
     '</div>'+
     '<div class="lvwrap"><span class="lvbadge">Lv.'+lv+'</span><div class="lvbar"><i style="width:'+into+'%"></i></div></div>'+
@@ -211,6 +229,7 @@ function renderHome(){
     h+='<button class="bigbtn" onclick="startOne()">▶ 今日の1問をやる</button>';
   }
   if(wc>0 && !goalMet){h+='<button class="bigbtn weak" onclick="startOne()">🔁 にがてを復習（'+wc+'問）</button>';}
+  h+='<button class="bigbtn commute" onclick="startCommute()">🎧 通学モード（耳で1問・画面見なくてOK）</button>';
   h+='<button class="bigbtn kotsu" onclick="renderKotsu()">💡 計算のコツ図鑑（'+KOTSU.length+'こ）</button>';
 
   // バッジ
@@ -298,8 +317,11 @@ function checkAns(){
     addPoints(3); // 取り組んだだけでも少し加点（折れさせない）
   }
   const act=document.getElementById('actions');
-  act.innerHTML='<button class="btn speak" onclick="speakSol()">🔊</button>'+
-    '<button class="btn next" onclick="afterAns()">つぎへ ▶</button>';
+  const kid=TIPMAP[c.id];
+  let actHtml='<button class="btn speak" onclick="speakSol()">🔊</button>';
+  if(ok && kid){ actHtml+='<button class="btn usekotsu" id="ukbtn" onclick="useKotsu(\''+kid+'\')">👍 コツ使えた</button>'; }
+  actHtml+='<button class="btn next" onclick="afterAns()">つぎへ ▶</button>';
+  act.innerHTML=actHtml;
 }
 
 function afterAns(){
@@ -318,12 +340,14 @@ function tipHtml(qid){
 function renderKotsu(){
   crumbs.innerHTML='<a onclick="goHome()">🏠 トップ</a> ＞ 💡 コツ図鑑';
   const cats=[]; KOTSU.forEach(k=>{if(cats.indexOf(k.category)<0)cats.push(k.category);});
-  let h='<div class="panel"><div style="font-size:13px;color:#888;font-weight:700;margin-bottom:6px">計算がラクになる'+KOTSU.length+'このコツ。タップでくわしく見れるよ💡</div>';
+  let h='<div class="panel"><div style="font-size:13px;color:#888;font-weight:700;margin-bottom:6px">計算がラクになる'+KOTSU.length+'このコツ。使うほど 🌱→⭐→🏆 に育つよ！（つかえた合計 '+kotsuTotal()+'回 / 🏆'+kotsuMasterCount()+'こ）</div>';
   cats.forEach(cat=>{
     h+='<div class="kcat">'+cat+'</div>';
     KOTSU.filter(k=>k.category===cat).forEach(k=>{
+      const c=kotsuCount(k.id),m=masterMark(c);
       h+='<div class="kitem" onclick="openKotsu(\''+k.id+'\')"><div class="ke">'+k.emoji+'</div>'+
-         '<div><div class="kt">'+k.title+'</div><div class="kh">'+k.headline+'</div></div></div>';
+         '<div style="flex:1"><div class="kt">'+k.title+(m?' <span class="mmark">'+m+'</span>':'')+'</div><div class="kh">'+k.headline+'</div></div>'+
+         (c>0?'<div class="kcnt">'+c+'回</div>':'')+'</div>';
     });
   });
   h+='<div class="btns"><button class="backbtn" onclick="goHome()">🏠 トップにもどる</button></div></div>';
@@ -340,9 +364,82 @@ function openKotsu(id){
     '<div class="vsbox"><div class="vshard">😵 ふつう：'+k.hardWay+'</div>'+
       '<div class="vseasy">😆 ラク：'+k.easyWay+'</div></div>'+
     '<div class="kexample">'+k.example+'</div>'+
+    (function(){const c=kotsuCount(k.id);return '<div class="kmastery">'+(c>0?masterMark(c)+' このコツ つかえた回数：<b>'+c+'回</b>'+(c<5?'（あと'+(5-c)+'回で🏆マスター）':'　マスター達成！🏆'):'まだ使ってないよ。問題で使えたら「👍コツ使えた」を押してね')+'</div>';})()+
     '<div class="btns"><button class="btn next" onclick="startOne()">この調子で1問！▶</button>'+
       '<button class="backbtn" onclick="renderKotsu()">📖 図鑑へ</button></div></div>';
 }
+
+// ===== コツの「使えた回数」＝マスター度 =====
+function kotsuMap(){const p=pload();return p.kotsu||{};}
+function kotsuCount(id){return kotsuMap()[id]||0;}
+function kotsuUse(id){const p=pload();p.kotsu=p.kotsu||{};p.kotsu[id]=(p.kotsu[id]||0)+1;psave(p);return p.kotsu[id];}
+function kotsuTotal(){const m=kotsuMap();let n=0;for(const k in m)n+=m[k];return n;}
+function kotsuMasterCount(){const m=kotsuMap();let n=0;for(const k in m)if(m[k]>=5)n++;return n;}
+function masterMark(c){return c>=5?'🏆':(c>=3?'⭐':(c>=1?'🌱':''));}
+function useKotsu(kid){
+  const k=tipById(kid); const c=kotsuUse(kid); addPoints(5);
+  const b=document.getElementById('ukbtn'); if(b){b.outerHTML='<button class="btn done" disabled>✓ つかえた！</button>';}
+  toast('✨「'+k.title+'」のコツ '+c+'回め！＋5pt'); pop();
+  if(c===3) setTimeout(()=>toast('⭐「'+k.title+'」コツ⭐ゲット！'),950);
+  if(c===5) setTimeout(()=>{toast('🏆「'+k.title+'」コツマスター達成！');pop();},950);
+}
+
+// ===== 通学モード（音声・画面を見なくてもOK） =====
+let commute={order:[],idx:0,phase:'q',auto:false,timer:null};
+function startCommute(){
+  warmup(); // タップ起点で音声を有効化（iOS対策）
+  commute={order:shuffleArr(BANK.map((_,i)=>i)),idx:0,phase:'q',auto:false,timer:null};
+  renderCommute(); speakQ_();
+}
+function shuffleArr(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function commuteQ(){return BANK[commute.order[commute.idx%commute.order.length]];}
+// 数式を読みやすい日本語に
+function toSpeech(s){
+  return String(s)
+    .replace(/\(-(\d+(?:\.\d+)?)\)/g,'マイナス$1').replace(/\(\+(\d+(?:\.\d+)?)\)/g,'プラス$1') // (-3)→マイナス3
+    .replace(/cm³/g,'立方センチ').replace(/cm²/g,'平方センチ').replace(/cm/g,'センチ')
+    .replace(/(\d)³/g,'$1の3乗').replace(/(\d)²/g,'$1の2乗')
+    .replace(/×/g,' かける ').replace(/÷/g,' わる ')
+    .replace(/＝|=/g,' は ').replace(/\?|？/g,' いくつ')
+    .replace(/\s\+\s|\+/g,' たす ')
+    .replace(/\s-\s/g,' ひく ')   // スペースつきの - は引き算
+    .replace(/-/g,'マイナス')     // のこりの - は負の符号
+    .replace(/x/g,'エックス').replace(/y/g,'ワイ').replace(/\ba\b/g,'エー')
+    .replace(/[（）()]/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+function speakQ_(){const q=commuteQ();speakJa((q.story?q.story+'。':'')+toSpeech(q.q));}
+function speakA_(){const q=commuteQ();speakJa('こたえは、'+toSpeech(q.a));}
+function renderCommute(){
+  crumbs.innerHTML='<a onclick="stopCommute()">🏠 トップ</a> ＞ 🎧 通学モード';
+  const q=commuteQ();
+  view.innerHTML='<div class="panel commute">'+
+    '<div class="counter"><span>🎧 通学モード</span><span class="tag">'+q.unit+'</span></div>'+
+    '<div class="ccard"><div class="cnum">'+(commute.idx+1)+'問目</div>'+
+      '<div class="cq">'+(q.story?q.story+'<br>':'')+q.q+'</div>'+
+      '<div class="ca" id="ca" style="display:none">こたえ：'+q.a+'</div></div>'+
+    '<div class="cbtns">'+
+      '<button class="btn speak" onclick="speakQ_()">🔊 もう一回</button>'+
+      '<button class="btn flip" onclick="revealA()">💡 答えを聞く</button>'+
+      '<button class="btn next" onclick="nextCommute()">▶ つぎ</button>'+
+    '</div>'+
+    '<button class="autobtn'+(commute.auto?' on':'')+'" onclick="toggleAuto()">'+(commute.auto?'⏸ オート再生中…止める':'▶ オート再生（耳だけでOK）')+'</button>'+
+    '<div class="chelp">画面を見なくても大丈夫。問題→考える→答え、の声が流れるよ。電車の中でどうぞ🚃</div>'+
+    '<div class="btns"><button class="backbtn" onclick="stopCommute()">やめる</button></div></div>';
+}
+function revealA(){const ca=document.getElementById('ca');if(ca)ca.style.display='block';speakA_();
+  // 答えまで聞いたら「やった」記録（連続日数キープ・採点はしない）
+  if(commute.phase!=='done'){commute.phase='done';if(solvedToday()===0)recordDay(1);bumpSolvedToday();addPoints(3);}}
+function nextCommute(){commute.idx++;commute.phase='q';renderCommute();speakQ_();}
+function toggleAuto(){commute.auto=!commute.auto;if(commute.auto)autoLoop();else clearTimeout(commute.timer);renderCommute();}
+function autoLoop(){ // 問題→(間)→答え→(間)→次 を自動で
+  speakQ_(); commute.phase='q';
+  commute.timer=setTimeout(()=>{ if(!commute.auto)return; revealA();
+    commute.timer=setTimeout(()=>{ if(!commute.auto)return; nextCommuteAuto(); },4500);
+  },7000);
+}
+function nextCommuteAuto(){commute.idx++;renderCommute();if(commute.auto)autoLoop();}
+function stopCommute(){commute.auto=false;clearTimeout(commute.timer);if(window.speechSynthesis)speechSynthesis.cancel();renderHome();}
 
 // ----- 読み上げ -----
 let warmed=false;
@@ -366,6 +463,8 @@ const BADGES=[
   {id:'lv3',e:'🚀',n:'レベル3',f:(p,s)=>lvlFromPts(p.points||0)>=3},
   {id:'lv5',e:'🏆',n:'レベル5',f:(p,s)=>lvlFromPts(p.points||0)>=5},
   {id:'weak0',e:'🧹',n:'にがてゼロ',f:(p,s)=>weakCount()===0&&(p.points||0)>0},
+  {id:'kotsu5',e:'💡',n:'コツ5回',f:(p,s)=>kotsuTotal()>=5},
+  {id:'kotsumaster',e:'🧠',n:'コツ名人',f:(p,s)=>kotsuMasterCount()>=3},
 ];
 
 // =========================================================
