@@ -431,8 +431,9 @@ function revealA(){const ca=document.getElementById('ca');if(ca)ca.style.display
   // 答えまで聞いたら「やった」記録（連続日数キープ・採点はしない）
   if(commute.phase!=='done'){commute.phase='done';if(solvedToday()===0)recordDay(1);bumpSolvedToday();addPoints(3);}}
 function nextCommute(){commute.idx++;commute.phase='q';renderCommute();speakQ_();}
-function toggleAuto(){commute.auto=!commute.auto;if(commute.auto)autoLoop();else clearTimeout(commute.timer);renderCommute();}
+function toggleAuto(){clearTimeout(commute.timer);commute.auto=!commute.auto;if(commute.auto)autoLoop();renderCommute();}
 function autoLoop(){ // 問題→(間)→答え→(間)→次 を自動で
+  clearTimeout(commute.timer); // 二重起動・タイマーリーク防止（冪等化）
   speakQ_(); commute.phase='q';
   commute.timer=setTimeout(()=>{ if(!commute.auto)return; revealA();
     commute.timer=setTimeout(()=>{ if(!commute.auto)return; nextCommuteAuto(); },4500);
